@@ -1,0 +1,5 @@
+.DS_Store
+database.db
+.vscode/
+.VSCodeCounter/
+*.pyc
