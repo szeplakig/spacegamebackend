@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from sqlmodel import Session, SQLModel, create_engine, select
+from sqlmodel import Session, create_engine, select
 
 from spacegamebackend.infra.models import UserModel
 from spacegamebackend.repositories.user_repository import UserRepository
@@ -37,12 +37,3 @@ class SqliteUserRepository(UserRepository):
         with Session(self.engine) as session:
             db_user = session.exec(select(UserModel).where(UserModel.id == user_id)).first()
             return User.model_validate(db_user) if db_user else None
-
-
-def create_tables() -> None:
-    engine = create_engine("sqlite:///database.db")
-    SQLModel.metadata.create_all(engine)
-
-
-if __name__ == "__main__":
-    create_tables()

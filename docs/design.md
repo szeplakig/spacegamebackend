@@ -715,7 +715,6 @@ The player will be able to build and upgrade structures on their planets or othe
   - **Gas Collection:** From gas giants and nebulae.
 
 - **Environmental Hazards:**
-
   - **Radiation Zones:** Near pulsars and supernova remnants.
   - **Gravitational Anomalies:** Around black holes and neutron stars.
 

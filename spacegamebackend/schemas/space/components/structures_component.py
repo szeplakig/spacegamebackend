@@ -1,12 +1,10 @@
-from spacegamebackend.schemas.space.component import Component
-from spacegamebackend.schemas.structure_slot_type import StructureSlotType
+from spacegamebackend.schemas.component_system.component import Component
 
 
 class StructuresComponent(Component):
-    def __init__(self, *, title: str, structure_slots: int, structure_type: StructureSlotType) -> None:
+    def __init__(self, *, title: str, structure_slots: int) -> None:
         super().__init__(title=title)
         self.structure_slots = structure_slots
-        self.structure_type = structure_type
 
     def to_dict(self) -> dict:
         return {
@@ -14,5 +12,4 @@ class StructuresComponent(Component):
             "category": self.category,
             "title": self.title,
             "structure_slots": self.structure_slots,
-            "structure_type": self.structure_type,
         }

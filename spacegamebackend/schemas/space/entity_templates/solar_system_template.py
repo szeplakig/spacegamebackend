@@ -2,17 +2,22 @@ from collections.abc import Hashable
 
 from spacegamebackend.schemas.space.component_templates.entities_component_template import (
     EntitiesComponentTemplate,
+    WeightedEntityTemplate,
 )
-from spacegamebackend.schemas.space.component_templates.structures_component_template import StructuresComponentTemplate
+from spacegamebackend.schemas.space.component_templates.structures_component_template import (
+    DeepSpaceStructuresComponentTemplate,
+)
 from spacegamebackend.schemas.space.entitites.solar_system import SolarSystem
 from spacegamebackend.schemas.space.entity import Entity
 from spacegamebackend.schemas.space.entity_template import EntityTemplate
-from spacegamebackend.schemas.space.entity_templates.star_template import StarTemplate
-from spacegamebackend.schemas.space.entity_templates.terrestial_planet_template import (
-    TerrestialPlanetTemplate,
+from spacegamebackend.schemas.space.entity_templates.black_hole_template import (
+    BlackHoleTemplate,
 )
+from spacegamebackend.schemas.space.entity_templates.planet_template import (
+    PLANET_TEMPLATES,
+)
+from spacegamebackend.schemas.space.entity_templates.star_template import StarTemplate
 from spacegamebackend.schemas.space.seeder import Seeder
-from spacegamebackend.schemas.structure_slot_type import StructureSlotType
 
 
 class SolarSystemTemplate(EntityTemplate):
@@ -21,32 +26,27 @@ class SolarSystemTemplate(EntityTemplate):
             component_templates=[
                 EntitiesComponentTemplate(
                     title="Primary Entities",
-                    entity_templates=[StarTemplate()],
+                    weighted_entity_templates=[
+                        WeightedEntityTemplate(weight=100, entity_template=StarTemplate()),
+                        WeightedEntityTemplate(weight=1, entity_template=BlackHoleTemplate()),
+                    ],
                     min_entities=1,
-                    max_entities=3,
-                    falloff_factor=0.5,
+                    max_entities=5,
                 ),
                 EntitiesComponentTemplate(
                     title="Secondary Entities",
-                    entity_templates=[TerrestialPlanetTemplate()],
-                    min_entities=0,
+                    weighted_entity_templates=[
+                        WeightedEntityTemplate(weight=1, entity_template=template) for template in PLANET_TEMPLATES
+                    ],
+                    min_entities=1,
                     max_entities=10,
-                    falloff_factor=0.5,
                 ),
-                StructuresComponentTemplate(
-                    title="Deep Space Structures",
-                    min_structure_slots=10,
+                DeepSpaceStructuresComponentTemplate(
+                    min_structure_slots=0,
                     max_structure_slots=30,
-                    structure_type=StructureSlotType.DEEP_SPACE,
                 ),
             ],
         )
-        self.primary_entity_templates: list[EntityTemplate] = [
-            StarTemplate(),
-        ]
-        self.secondary_entity_templates: list[EntityTemplate] = [
-            TerrestialPlanetTemplate(),
-        ]
 
     def generate_entity(self, *, seeder: Seeder, differ: Hashable | None) -> Entity:
         seeder.seed(differ=(differ, self.category, "entity"))

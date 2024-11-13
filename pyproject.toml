@@ -65,7 +65,23 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["ALL"]
-ignore = ["D", "COM812", "ISC001", "T201", "B008", "S311", "B019"]
+# "ARG002", "F841", "FIX002", "TRY002" are disabled
+ignore = [
+    "D",
+    "COM812",
+    "ISC001",
+    "T201",
+    "B008",
+    "S311",
+    "B019",
+    "TRY003",
+    "EM101",
+    "TD",
+    "ARG002",
+    "F841",
+    "FIX002",
+    "TRY002",
+]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
@@ -102,3 +118,6 @@ docstring-code-format = false
 docstring-code-line-length = "dynamic"
 
 # RUFF
+
+[tool.mypy]
+enable_incomplete_feature = ["NewGenericSyntax"]

@@ -1,9 +1,7 @@
-from abc import ABC, abstractmethod
-
-from spacegamebackend.schemas.space.component import Component
+from spacegamebackend.schemas.component_system.component import Component
 
 
-class Entity(ABC):
+class Entity:
     def __init__(self, *, title: str, entity_id: str, components: list[Component]) -> None:
         self.category = self.__class__.__qualname__
         self.title = title
@@ -13,6 +11,10 @@ class Entity(ABC):
     def add_component(self, component: Component) -> None:
         self.components.append(component)
 
-    @abstractmethod
     def to_dict(self) -> dict:
-        pass
+        return {
+            "category": self.category,
+            "title": self.title,
+            "entity_id": self.entity_id,
+            "components": [component.to_dict() for component in self.components],
+        }

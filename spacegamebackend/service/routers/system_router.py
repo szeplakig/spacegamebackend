@@ -24,10 +24,9 @@ def create_system_router() -> APIRouter:
     )
     def get_system(
         system_request: SystemRequest = Query(...),
-        access_token: AccessTokenV1 = Depends(validate_access_token),
+        access_token: AccessTokenV1 = Depends(validate_access_token),  # noqa: ARG001
         handler: GetSystemHandler = Depends(get__get_system_handler_dependency),
     ) -> SystemResponse | None:
-        print(access_token)
         return handler.handle(system_request)
 
     return router

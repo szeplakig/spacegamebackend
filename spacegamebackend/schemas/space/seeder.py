@@ -13,10 +13,10 @@ class UnsupportedHashableTypeError(TypeError):
 
 def consistent_hash(value: Hashable) -> int:
     if isinstance(value, int | float | str | bytes):
-        return int(hashlib.sha256(str(value).encode("utf-8")).hexdigest(), 16)
+        return int(hashlib.sha384(str(value).encode("utf-8")).hexdigest(), 16)
     if isinstance(value, tuple):
         return int(
-            hashlib.sha256("".join(map(str, value)).encode("utf-8")).hexdigest(),
+            hashlib.sha384("".join(map(str, value)).encode("utf-8")).hexdigest(),
             16,
         )
     raise UnsupportedHashableTypeError

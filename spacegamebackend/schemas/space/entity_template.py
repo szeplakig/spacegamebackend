@@ -3,8 +3,8 @@ from abc import ABC, abstractmethod
 from collections.abc import Hashable
 from uuid import UUID
 
-from spacegamebackend.schemas.space.component import Component
-from spacegamebackend.schemas.space.component_template import ComponentTemplate
+from spacegamebackend.schemas.component_system.component import Component
+from spacegamebackend.schemas.component_system.component_template import ComponentTemplate
 from spacegamebackend.schemas.space.entity import Entity
 from spacegamebackend.schemas.space.seeder import Seeder
 

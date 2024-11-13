@@ -1,4 +1,4 @@
-from spacegamebackend.schemas.space.component import Component
+from spacegamebackend.schemas.component_system.component import Component
 from spacegamebackend.schemas.space.entity import Entity
 
 

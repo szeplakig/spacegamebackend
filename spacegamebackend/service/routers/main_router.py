@@ -1,11 +1,11 @@
-import time
-from collections.abc import Callable
-from datetime import timedelta
-
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from spacegamebackend.service.routers.structures_router import create_structures_router
 from spacegamebackend.service.routers.system_router import create_system_router
+from spacegamebackend.service.routers.user_resources_router import (
+    create_user_resources_router,
+)
 from spacegamebackend.service.routers.user_router import create_user_router
 
 origins = [
@@ -25,16 +25,12 @@ def create_main_router() -> FastAPI:
         allow_headers=["*"],  # Allows all headers
     )
 
-    @app.middleware("http")
-    async def add_process_time_header(request: Request, call_next: Callable) -> Response:
-        start_time = time.time()
-        response = await call_next(request)
-        print(f"Time took to process the request and return response is {timedelta(seconds=time.time() - start_time)}")
-        response.headers["X-Process-Time"] = str(timedelta(seconds=time.time() - start_time))
-        return response
+    app.include_router(create_user_router())
 
     app.include_router(create_system_router())
 
-    app.include_router(create_user_router())
+    app.include_router(create_structures_router())
+
+    app.include_router(create_user_resources_router())
 
     return app
