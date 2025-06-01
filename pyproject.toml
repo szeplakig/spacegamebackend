@@ -14,6 +14,7 @@ bcrypt = "^4.2.0"
 sqlmodel = "^0.0.22"
 sqlalchemy = "^2.0.35"
 pyjwt = "^2.9.0"
+opensimplex = "^0.4.5.1"
 
 [tool.poetry.group.test.dependencies]
 ruff = "^0.6.9"

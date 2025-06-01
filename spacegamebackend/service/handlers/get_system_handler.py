@@ -1,9 +1,6 @@
 from pydantic import BaseModel
 
-from spacegamebackend.application.models.space.entity_templates.system_template import (
-    SystemTemplate,
-)
-from spacegamebackend.application.models.space.seeder import CoordinateSeeder
+from spacegamebackend.service.handlers.entity_finder import get_system
 
 
 class SystemRequest(BaseModel):
@@ -20,6 +17,4 @@ class GetSystemHandler:
         pass
 
     def handle(self, system_request: SystemRequest) -> SystemResponse | None:
-        seeder = CoordinateSeeder(x=system_request.x, y=system_request.y)
-        solar_system = SystemTemplate().generate_entity(seeder=seeder, differ=None)
-        return SystemResponse(data=solar_system.to_dict())
+        return SystemResponse(data=get_system(system_request.x, system_request.y).to_dict())

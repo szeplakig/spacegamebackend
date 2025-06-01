@@ -218,16 +218,20 @@ class Outpost(StructureTemplate):
 
 
 @StructureTemplate.register_structure_template
-class StarterOutpost(StructureTemplate):
+class OrbitalGovernmentCenter(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.STARTER_OUTPOST,
-            title="Outpost",
-            description="A small outpost to claim a location in space.",
+            structure_type=StructureType.ORBITAL_GOVERNMENT_CENTER,
+            title="Orbital Government Center",
+            description="A center of government for your empire in orbit.",
             tier=0,
-            entity_slot_categories={EntitySlotCategory.DEEP_SPACE},
-            production_components=[],
+            entity_slot_categories={EntitySlotCategory.ORBIT},
+            production_components=[
+                AuthorityProduction(value=15),
+                EnergyProduction(value=20),
+            ],
             requirement_components=[
                 MineralCost(value=100),
+                EnergyCost(value=200),
             ],
         )

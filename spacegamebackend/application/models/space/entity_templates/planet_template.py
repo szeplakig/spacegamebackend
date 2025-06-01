@@ -23,12 +23,7 @@ from spacegamebackend.domain.models.space.seeder import Seeder
 
 
 class PlanetTemplateBase(EntityTemplate):
-    def __init__(
-        self,
-        *,
-        title: str,
-        entity_slot_categories: set[EntitySlotCategory] | None = None
-    ) -> None:
+    def __init__(self, *, title: str, entity_slot_categories: set[EntitySlotCategory] | None = None) -> None:
         super().__init__(
             component_templates=[
                 Tier0SlotComponentTemplate(
@@ -39,9 +34,7 @@ class PlanetTemplateBase(EntityTemplate):
                 MineralsComponentTemplate(min_value=5, max_value=20),
                 EntitiesComponentTemplate(
                     title="Moons",
-                    weighted_entity_templates=[
-                        WeightedEntityTemplate(weight=1, entity_template=MoonTemplate())
-                    ],
+                    weighted_entity_templates=[WeightedEntityTemplate(weight=1, entity_template=MoonTemplate())],
                     min_entities=0,
                     max_entities=5,
                 ),
@@ -103,9 +96,7 @@ class GasGiantTemplate(PlanetTemplateBase):
             ResearchComponentTemplate(min_value=0, max_value=10),
             EntitiesComponentTemplate(
                 title="Moons",
-                weighted_entity_templates=[
-                    WeightedEntityTemplate(weight=1, entity_template=MoonTemplate())
-                ],
+                weighted_entity_templates=[WeightedEntityTemplate(weight=1, entity_template=MoonTemplate())],
                 min_entities=0,
                 max_entities=10,
             ),
@@ -120,9 +111,7 @@ class IceGiantTemplate(PlanetTemplateBase):
             MineralsComponentTemplate(min_value=20, max_value=50),
             EntitiesComponentTemplate(
                 title="Moons",
-                weighted_entity_templates=[
-                    WeightedEntityTemplate(weight=1, entity_template=MoonTemplate())
-                ],
+                weighted_entity_templates=[WeightedEntityTemplate(weight=1, entity_template=MoonTemplate())],
                 min_entities=0,
                 max_entities=10,
             ),

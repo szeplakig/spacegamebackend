@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from spacegamebackend.domain.models.structure.structure import Structure
 from spacegamebackend.domain.models.structure.structure_status import StructureStatus
+from spacegamebackend.domain.models.structure.structure_type import StructureType
 
 
 class UserStructureRepository(ABC):
@@ -16,6 +17,10 @@ class UserStructureRepository(ABC):
     @abstractmethod
     def get_structure(self, *, structure_id: str) -> Structure:
         """Get a structure. If the structure does not exist, raise an exception."""
+
+    @abstractmethod
+    def has_structure(self, *, user_id: str, entity_id: str, structure_type: StructureType) -> bool:
+        """Check if a user has a structure. If the user does not exist, raise an exception."""
 
     @abstractmethod
     def add_user_structure(self, *, user_id: str, entity_id: str, structure: Structure) -> None:

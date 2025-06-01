@@ -9,6 +9,7 @@ from spacegamebackend.domain.models.resource.user_resource_repository import (
     UserResourcesRepository,
 )
 from spacegamebackend.domain.models.structure.structure import Structure
+from spacegamebackend.domain.models.structure.structure_type import StructureType
 from spacegamebackend.domain.models.structure.user_structure_repository import (
     UserStructureRepository,
 )
@@ -47,14 +48,22 @@ class UserDataHub:
     def get_structure(self, structure_id: str) -> Structure:
         return self.user_structure_repository.get_structure(structure_id=structure_id)
 
+    @lru_cache
+    def has_structure(self, entity_id: str, structure_type: StructureType) -> bool:
+        return self.user_structure_repository.has_structure(
+            user_id=self.user_id, entity_id=entity_id, structure_type=structure_type
+        )
+
     def upgrade_structure(self, structure_id: str) -> None:
         self.get_structure.cache_clear()
         self.get_structures.cache_clear()
         self.get_all_structures.cache_clear()
+        self.has_structure.cache_clear()
         self.user_structure_repository.upgrade_structure(structure_id=structure_id)
 
     def delete_structure(self, structure_id: str) -> None:
         self.get_structure.cache_clear()
         self.get_structures.cache_clear()
         self.get_all_structures.cache_clear()
+        self.has_structure.cache_clear()
         self.user_structure_repository.delete_user_structure(structure_id=structure_id)

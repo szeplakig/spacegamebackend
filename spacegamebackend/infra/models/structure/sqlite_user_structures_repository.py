@@ -3,7 +3,9 @@ from sqlmodel import Session, and_, select
 
 from spacegamebackend.domain.models.structure.structure import Structure
 from spacegamebackend.domain.models.structure.structure_status import StructureStatus
-from spacegamebackend.domain.models.structure.structure_template import StructureTemplate
+from spacegamebackend.domain.models.structure.structure_template import (
+    StructureTemplate,
+)
 from spacegamebackend.domain.models.structure.structure_type import StructureType
 from spacegamebackend.domain.models.structure.user_structure_repository import (
     UserStructureRepository,
@@ -55,6 +57,20 @@ class SqliteUserStructureRepository(UserStructureRepository):
             )
             for db_structure in db_structures
         ]
+
+    def has_structure(self, *, user_id: str, entity_id: str, structure_type: StructureType) -> bool:
+        """Check if a user has a structure. If the user does not exist, raise an exception."""
+        with Session(self.engine) as session:
+            db_structure = session.exec(
+                select(StructuresModel).where(
+                    and_(
+                        StructuresModel.user_id == user_id,
+                        StructuresModel.entity_id == entity_id,
+                        StructuresModel.structure_type == structure_type.value,
+                    )
+                )
+            ).first()
+        return db_structure is not None
 
     def get_structure(self, *, structure_id: str) -> Structure:
         """Get a structure. If the structure does not exist, raise an exception."""

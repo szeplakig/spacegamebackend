@@ -27,7 +27,8 @@ class ResourceProductionComponent(ProductionComponent):
         self.scaling_factor = scaling_factor
 
     def get_scaled_value(self, level: int) -> int:
-        scaled_value = self.value * (self.scaling_factor**level)
+        # scaled_value = self.value * (self.scaling_factor**level)
+        scaled_value = self.value
         magnitude = 10 ** int(len(str(int(abs(scaled_value)))) - 1)
         nice_value = round(scaled_value / magnitude) * magnitude
         return int(nice_value)

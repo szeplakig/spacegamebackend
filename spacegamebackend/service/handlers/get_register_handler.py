@@ -67,16 +67,31 @@ class RegisterUserHandler:
             ),
         )
         solar_system = get_system(x=0, y=0)
+        # Add structures to the user's home system
+        # Add the outpost
         self.user_structure_repository.add_user_structure(
             user_id=user.id,
             entity_id=solar_system.entity_id,
             structure=Structure(
                 structure_id=uuid4().hex,
                 entity_id=solar_system.entity_id,
-                structure_type=StructureType.STARTER_OUTPOST,
+                structure_type=StructureType.OUTPOST,
                 level=1,
                 structure_status=StructureStatus.P100,
-                structure_template=StructureTemplate.structure_templates[StructureType.STARTER_OUTPOST],
+                structure_template=StructureTemplate.structure_templates[StructureType.OUTPOST],
+            ),
+        )
+        # Add the OrbitalGovernmentCenter
+        self.user_structure_repository.add_user_structure(
+            user_id=user.id,
+            entity_id=solar_system.entity_id,
+            structure=Structure(
+                structure_id=uuid4().hex,
+                entity_id=solar_system.entity_id,
+                structure_type=StructureType.ORBITAL_GOVERNMENT_CENTER,
+                level=1,
+                structure_status=StructureStatus.P100,
+                structure_template=StructureTemplate.structure_templates[StructureType.ORBITAL_GOVERNMENT_CENTER],
             ),
         )
 

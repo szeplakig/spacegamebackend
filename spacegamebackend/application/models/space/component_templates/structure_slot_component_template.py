@@ -46,6 +46,16 @@ class OutpostStructureSlotComponentTemplate(StructureSlotComponentTemplate):
         )
 
 
+class OrbitalGovernmentCenterStructureSlotComponentTemplate(StructureSlotComponentTemplate):
+    def __init__(self) -> None:
+        super().__init__(
+            title="Orbital Government Center slot",
+            min_slots=1,
+            max_slots=1,
+            allowed_structure_types={StructureType.ORBITAL_GOVERNMENT_CENTER},
+        )
+
+
 class Tier0SlotComponentTemplate(StructureSlotComponentTemplate):
     def __init__(self, min_slots: int, max_slots: int) -> None:
         super().__init__(

@@ -1,4 +1,5 @@
 from enum import StrEnum, auto
+from functools import lru_cache
 
 
 class StructureType(StrEnum):
@@ -8,6 +9,7 @@ class StructureType(StrEnum):
     RESEARCH_LAB = auto()
     ALLOY_FOUNDRY = auto()
     GOVERNMENT_CENTER = auto()
+    ORBITAL_GOVERNMENT_CENTER = auto()
     DEUTERIUM_EXTRACTOR = auto()
     FUSION_REACTOR = auto()
     OUTPOST = auto()
@@ -21,6 +23,7 @@ class StructureType(StrEnum):
     DARK_MATTER_ENGINE = auto()
 
     @staticmethod
+    @lru_cache(1)
     def tier_0() -> set["StructureType"]:
         return {
             StructureType.MINING_FACILITY,
@@ -31,10 +34,10 @@ class StructureType(StrEnum):
             StructureType.DEUTERIUM_EXTRACTOR,
             StructureType.FUSION_REACTOR,
             StructureType.OUTPOST,
-            StructureType.STARTER_OUTPOST,
         }
 
     @staticmethod
+    @lru_cache(1)
     def tier_1() -> set["StructureType"]:
         return {
             StructureType.ORBITAL_SOLAR_FARM,
