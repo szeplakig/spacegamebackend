@@ -1,0 +1,1 @@
+WORLD_SEED = 1

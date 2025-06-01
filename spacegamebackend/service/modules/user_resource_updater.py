@@ -1,15 +1,15 @@
-from spacegamebackend.repositories.user_research_repository import (
+from spacegamebackend.domain.models.research.research_type import ResearchType
+from spacegamebackend.domain.models.research.user_research_repository import (
     UserResearchRepository,
 )
-from spacegamebackend.repositories.user_resource_repository import (
+from spacegamebackend.domain.models.resource.resource import Resources
+from spacegamebackend.domain.models.resource.user_resource_repository import (
     UserResourcesRepository,
 )
-from spacegamebackend.repositories.user_structure_repository import (
+from spacegamebackend.domain.models.structure.structure import Structure
+from spacegamebackend.domain.models.structure.user_structure_repository import (
     UserStructureRepository,
 )
-from spacegamebackend.schemas.research.research_type import ResearchType
-from spacegamebackend.schemas.resource.types import Resources
-from spacegamebackend.schemas.structures.structure import Structure
 
 
 class UserResosourceUpdater:

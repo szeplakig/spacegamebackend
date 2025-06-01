@@ -4,7 +4,7 @@ import jwt
 from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 
-from spacegamebackend.repositories.user_repository import UserRepository
+from spacegamebackend.domain.models.user.user_repository import UserRepository
 from spacegamebackend.service.dependencies.user_dependencies import (
     SECRET_KEY,
     AccessTokenV1,

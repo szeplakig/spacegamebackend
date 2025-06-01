@@ -20,6 +20,10 @@ ruff = "^0.6.9"
 mypy = "^1.11.2"
 pytest = "^8.3.3"
 
+
+[tool.poetry.group.dev.dependencies]
+matplotlib = "^3.9.2"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
@@ -65,7 +69,7 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["ALL"]
-# "ARG002", "F841", "FIX002", "TRY002" are disabled
+
 ignore = [
     "D",
     "COM812",
@@ -81,6 +85,11 @@ ignore = [
     "F841",
     "FIX002",
     "TRY002",
+    "DTZ005",
+    "FBT003",
+    "EM102",
+    "S101",
+    "F403",
 ]
 
 # Allow fix for all enabled rules (when `--fix`) is provided.

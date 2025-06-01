@@ -16,4 +16,8 @@ unit:
 	poetry run pytest tests/unit
 
 serve:
-	poetry run gunicorn spacegamebackend.service.service:app -k uvicorn.workers.UvicornH11Worker -w 1
+	poetry run gunicorn spacegamebackend.service.service:app -k uvicorn.workers.UvicornH11Worker -w 1 --reload
+
+reset_db:
+	rm database.db
+	poetry run python spacegamebackend/infra/scripts/init_tables.py

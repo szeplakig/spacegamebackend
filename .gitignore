@@ -3,3 +3,4 @@ database.db
 .vscode/
 .VSCodeCounter/
 *.pyc
+.idea/*
