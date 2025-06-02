@@ -72,6 +72,8 @@ class RegisterUserHandler:
         self.user_structure_repository.add_user_structure(
             user_id=user.id,
             entity_id=solar_system.entity_id,
+            x=0,
+            y=0,
             structure=Structure(
                 structure_id=uuid4().hex,
                 entity_id=solar_system.entity_id,
@@ -85,6 +87,8 @@ class RegisterUserHandler:
         self.user_structure_repository.add_user_structure(
             user_id=user.id,
             entity_id=solar_system.entity_id,
+            x=0,
+            y=0,
             structure=Structure(
                 structure_id=uuid4().hex,
                 entity_id=solar_system.entity_id,

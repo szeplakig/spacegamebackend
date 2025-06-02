@@ -23,7 +23,11 @@ class UserStructureRepository(ABC):
         """Check if a user has a structure. If the user does not exist, raise an exception."""
 
     @abstractmethod
-    def add_user_structure(self, *, user_id: str, entity_id: str, structure: Structure) -> None:
+    def has_structure_at(self, *, user_id: str, x: int, y: int, structure_type: StructureType) -> bool:
+        """Check if a user has a structure at a specific position. If the user does not exist, raise an exception."""
+
+    @abstractmethod
+    def add_user_structure(self, *, user_id: str, entity_id: str, x: int, y: int, structure: Structure) -> None:
         """Add a structure to the user. If the user does not exist, raise an exception."""
 
     @abstractmethod

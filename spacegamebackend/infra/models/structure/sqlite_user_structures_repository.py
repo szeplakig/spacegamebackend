@@ -72,6 +72,21 @@ class SqliteUserStructureRepository(UserStructureRepository):
             ).first()
         return db_structure is not None
 
+    def has_structure_at(self, *, user_id: str, x: int, y: int, structure_type: StructureType) -> bool:
+        """Check if a user has a structure at a specific position. If the user does not exist, raise an exception."""
+        with Session(self.engine) as session:
+            db_structure = session.exec(
+                select(StructuresModel).where(
+                    and_(
+                        StructuresModel.user_id == user_id,
+                        StructuresModel.x == x,
+                        StructuresModel.y == y,
+                        StructuresModel.structure_type == structure_type.value,
+                    )
+                )
+            ).first()
+        return db_structure is not None
+
     def get_structure(self, *, structure_id: str) -> Structure:
         """Get a structure. If the structure does not exist, raise an exception."""
         with Session(self.engine) as session:
@@ -90,12 +105,14 @@ class SqliteUserStructureRepository(UserStructureRepository):
             )
         raise Exception("Structure not found")
 
-    def add_user_structure(self, *, user_id: str, entity_id: str, structure: Structure) -> None:
+    def add_user_structure(self, *, user_id: str, entity_id: str, x: int, y: int, structure: Structure) -> None:
         """Add a structure to the user. If the user does not exist, raise an exception."""
         with Session(self.engine) as session:
             db_structure = StructuresModel(
                 user_id=user_id,
                 entity_id=entity_id,
+                x=x,
+                y=y,
                 structure_id=structure.structure_id,
                 level=structure.level,
                 structure_type=structure.structure_type,

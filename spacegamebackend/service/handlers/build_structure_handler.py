@@ -98,6 +98,8 @@ class BuildStructureHandler:
         self.user_structure_repository.add_user_structure(
             user_id=user_id,
             entity_id=request.entity_id,
+            x=request.x,
+            y=request.y,
             structure=Structure(
                 structure_id=uuid4().hex,
                 entity_id=entity.entity_id,

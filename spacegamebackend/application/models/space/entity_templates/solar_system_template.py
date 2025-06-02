@@ -34,7 +34,7 @@ class SolarSystemTemplate(EntityTemplate):
                         WeightedEntityTemplate(weight=1, entity_template=BlackHoleTemplate()),
                     ],
                     min_entities=1,
-                    max_entities=5,
+                    max_entities=3,
                 ),
                 EntitiesComponentTemplate(
                     title="Secondary Entities",

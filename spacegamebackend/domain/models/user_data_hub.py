@@ -54,11 +54,18 @@ class UserDataHub:
             user_id=self.user_id, entity_id=entity_id, structure_type=structure_type
         )
 
+    @lru_cache
+    def has_structure_at(self, x: int, y: int, structure_type: StructureType) -> bool:
+        return self.user_structure_repository.has_structure_at(
+            user_id=self.user_id, x=x, y=y, structure_type=structure_type
+        )
+
     def upgrade_structure(self, structure_id: str) -> None:
         self.get_structure.cache_clear()
         self.get_structures.cache_clear()
         self.get_all_structures.cache_clear()
         self.has_structure.cache_clear()
+        self.has_structure_at.cache_clear()
         self.user_structure_repository.upgrade_structure(structure_id=structure_id)
 
     def delete_structure(self, structure_id: str) -> None:
@@ -66,4 +73,5 @@ class UserDataHub:
         self.get_structures.cache_clear()
         self.get_all_structures.cache_clear()
         self.has_structure.cache_clear()
+        self.has_structure_at.cache_clear()
         self.user_structure_repository.delete_user_structure(structure_id=structure_id)
