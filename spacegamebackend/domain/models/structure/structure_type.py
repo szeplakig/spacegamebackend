@@ -18,7 +18,6 @@ class StructureType(StrEnum):
     # Tier 1
     ORBITAL_SOLAR_FARM = auto()
     DEEP_SPACE_RESEARCH_STATION = auto()
-    ALL_LOCATION_NOT_REQUIREMENT = auto()
     MEGA_DEEP_SPACE_PARTICLE_ACCELERATOR = auto()
     DARK_MATTER_ENGINE = auto()
 
@@ -42,7 +41,6 @@ class StructureType(StrEnum):
         return {
             StructureType.ORBITAL_SOLAR_FARM,
             StructureType.DEEP_SPACE_RESEARCH_STATION,
-            StructureType.ALL_LOCATION_NOT_REQUIREMENT,
             StructureType.MEGA_DEEP_SPACE_PARTICLE_ACCELERATOR,
             StructureType.DARK_MATTER_ENGINE,
         }

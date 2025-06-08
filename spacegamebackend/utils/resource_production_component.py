@@ -49,7 +49,9 @@ class ResourceProductionComponent(ProductionComponent):
 
 
 class EnergyProduction(ResourceProductionComponent):
-    def __init__(self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15) -> None:
+    def __init__(
+        self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15
+    ) -> None:
         super().__init__(
             title="Energy Production",
             resource_type=ResourceType.ENERGY,
@@ -60,7 +62,9 @@ class EnergyProduction(ResourceProductionComponent):
 
 
 class MineralsProduction(ResourceProductionComponent):
-    def __init__(self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15) -> None:
+    def __init__(
+        self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15
+    ) -> None:
         super().__init__(
             title="Minerals Production",
             resource_type=ResourceType.MINERALS,
@@ -71,7 +75,9 @@ class MineralsProduction(ResourceProductionComponent):
 
 
 class AlloysProduction(ResourceProductionComponent):
-    def __init__(self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15) -> None:
+    def __init__(
+        self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15
+    ) -> None:
         super().__init__(
             title="Alloys Production",
             resource_type=ResourceType.ALLOYS,
@@ -82,7 +88,9 @@ class AlloysProduction(ResourceProductionComponent):
 
 
 class ResearchProduction(ResourceProductionComponent):
-    def __init__(self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15) -> None:
+    def __init__(
+        self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15
+    ) -> None:
         super().__init__(
             title="Research Production",
             resource_type=ResourceType.RESEARCH,
@@ -93,7 +101,9 @@ class ResearchProduction(ResourceProductionComponent):
 
 
 class AntimatterProduction(ResourceProductionComponent):
-    def __init__(self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15) -> None:
+    def __init__(
+        self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15
+    ) -> None:
         super().__init__(
             title="Antimatter Production",
             resource_type=ResourceType.ANTIMATTER,
@@ -104,7 +114,9 @@ class AntimatterProduction(ResourceProductionComponent):
 
 
 class AuthorityProduction(ResourceProductionComponent):
-    def __init__(self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15) -> None:
+    def __init__(
+        self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15
+    ) -> None:
         super().__init__(
             title="Authority Production",
             resource_type=ResourceType.AUTHORITY,
@@ -115,7 +127,9 @@ class AuthorityProduction(ResourceProductionComponent):
 
 
 class EnergyUpkeep(ResourceProductionComponent):
-    def __init__(self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15) -> None:
+    def __init__(
+        self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15
+    ) -> None:
         super().__init__(
             title="Energy Upkeep",
             resource_type=ResourceType.ENERGY,
@@ -126,7 +140,9 @@ class EnergyUpkeep(ResourceProductionComponent):
 
 
 class AuthorityUpkeep(ResourceProductionComponent):
-    def __init__(self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15) -> None:
+    def __init__(
+        self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15
+    ) -> None:
         super().__init__(
             title="Authority Upkeep",
             resource_type=ResourceType.AUTHORITY,
@@ -137,7 +153,9 @@ class AuthorityUpkeep(ResourceProductionComponent):
 
 
 class MineralsUpkeep(ResourceProductionComponent):
-    def __init__(self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15) -> None:
+    def __init__(
+        self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15
+    ) -> None:
         super().__init__(
             title="Minerals Upkeep",
             resource_type=ResourceType.MINERALS,

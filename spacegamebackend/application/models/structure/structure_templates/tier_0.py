@@ -10,6 +10,7 @@ from spacegamebackend.utils.resource_production_component import (
     EnergyProduction,
     EnergyUpkeep,
     MineralsProduction,
+    MineralsUpkeep,
     ResearchProduction,
 )
 from spacegamebackend.utils.resource_requirement_component import (
@@ -118,7 +119,9 @@ class AlloyFoundry(StructureTemplate):
             entity_slot_categories={EntitySlotCategory.SURFACE},
             production_components=[
                 AlloysProduction(
-                    slot_usage=1,
+                    value=10,
+                ),
+                MineralsUpkeep(
                     value=10,
                 ),
                 EnergyUpkeep(
@@ -162,7 +165,7 @@ class DeuteriumExtractor(StructureTemplate):
         super().__init__(
             structure_type=StructureType.DEUTERIUM_EXTRACTOR,
             title="Deuterium Extractor",
-            description="Extracts deuterium from water.",
+            description="Extracts deuterium from water to fuel fusion.",
             tier=0,
             entity_slot_categories={EntitySlotCategory.SURFACE},
             production_components=[],

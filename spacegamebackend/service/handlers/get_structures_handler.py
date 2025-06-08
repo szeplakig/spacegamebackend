@@ -12,7 +12,9 @@ from spacegamebackend.domain.models.research.user_research_repository import (
 from spacegamebackend.domain.models.resource.user_resource_repository import (
     UserResourcesRepository,
 )
-from spacegamebackend.domain.models.structure.structure_template import StructureTemplate
+from spacegamebackend.domain.models.structure.structure_template import (
+    StructureTemplate,
+)
 from spacegamebackend.domain.models.structure.structure_type import StructureType
 from spacegamebackend.domain.models.structure.user_structure_repository import (
     UserStructureRepository,
@@ -44,7 +46,9 @@ class GetStructuresHandler:
         self.user_research_repository = user_research_repository
         self.user_structure_repository = user_structure_repository
 
-    def handle(self, request: GetStructuresRequest, user_id: str) -> GetStructuresResponse:
+    def handle(
+        self, request: GetStructuresRequest, user_id: str
+    ) -> GetStructuresResponse:
         built_structures = self.user_structure_repository.get_user_structures(
             user_id=user_id,
             entity_id=request.entity_id,
@@ -56,7 +60,15 @@ class GetStructuresHandler:
             y=request.y,
         )
         return GetStructuresResponse(
-            built_structures=[structure.to_dict() for structure in built_structures],
+            built_structures=[
+                {
+                    **StructureTemplate.structure_templates[
+                        structure.structure_type
+                    ].to_dict(),
+                    **structure.to_dict(),
+                }
+                for structure in built_structures
+            ],
             structure_templates=[template.to_dict() for template in matching_templates],
             other_templates={k: v.detail for k, v in other_templates.items()},
         )
