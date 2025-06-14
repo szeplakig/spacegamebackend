@@ -1,14 +1,25 @@
+import random
 from functools import lru_cache
 
 from spacegamebackend.application.models.space.components.entities_component import (
     EntitiesComponent,
 )
+from spacegamebackend.application.models.space.entity_templates.nebula_template import (
+    NebulaTemplate,
+)
+from spacegamebackend.application.models.space.entity_templates.solar_system_template import (
+    SolarSystemTemplate,
+)
 from spacegamebackend.application.models.space.entity_templates.system_template import (
     CenterSystemTemplate,
     SystemTemplate,
 )
+from spacegamebackend.application.models.space.entity_templates.void_template import (
+    VoidTemplate,
+)
 from spacegamebackend.application.models.space.seeder import CoordinateSeeder
 from spacegamebackend.domain.models.space.entity import Entity
+from spacegamebackend.domain.models.space.entity_template import EntityTemplate
 
 MATERIAL_DENSITY_SCALE = 200
 VOID_DENSITY_THRESHOLD = 0.1
@@ -35,7 +46,18 @@ def get_system(x: int, y: int) -> Entity:
         # Special case for the center system
         return CenterSystemTemplate().generate_entity(seeder=seeder, differ=2)
 
-    return SystemTemplate().generate_entity(seeder=seeder, differ=None)
+    value = random.uniform(0, 1)
+    template: EntityTemplate
+    if value < VOID_DENSITY_THRESHOLD:
+        # Generate a void system
+        template = VoidTemplate()
+    elif value < VOID_DENSITY_THRESHOLD * 3:
+        # Generate a nebula system
+        template = NebulaTemplate()
+    else:
+        # Generate a solar system
+        template = SolarSystemTemplate()
+    return SystemTemplate(template).generate_entity(seeder=seeder, differ=None)
 
 
 @lru_cache

@@ -1,10 +1,9 @@
 from abc import ABC, abstractmethod
 
-from spacegamebackend.utils.component_store import ComponentStore
 from spacegamebackend.utils.sortable_component import SortableComponent
 
 
-class ProductionComponent(SortableComponent, ABC):
+class StorageComponent(SortableComponent, ABC):
     def __init__(self, *, title: str, level: int = 1) -> None:
         self.title = title
         self.category = self.__class__.__qualname__
@@ -12,11 +11,8 @@ class ProductionComponent(SortableComponent, ABC):
 
     @abstractmethod
     def to_dict(self, *, level: int = 1) -> dict:
-        pass
+        """Convert the component to a dictionary representation."""
 
     @abstractmethod
-    def scale(self, *, level: int) -> "ProductionComponent":
-        pass
-
-
-ProductionComponentStore = ComponentStore[ProductionComponent]
+    def scale(self, *, level: int) -> "StorageComponent":
+        """Scale the component to a specific level."""

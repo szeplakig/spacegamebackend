@@ -1,8 +1,10 @@
+from spacegamebackend.domain.models.research.research_type import ResearchType
 from spacegamebackend.domain.models.space.entity_slot_category import EntitySlotCategory
 from spacegamebackend.domain.models.structure.structure_template import (
     StructureTemplate,
 )
 from spacegamebackend.domain.models.structure.structure_type import StructureType
+from spacegamebackend.utils.research_requirement_component import ResearchRequirement
 from spacegamebackend.utils.resource_production_component import (
     AlloysProduction,
     AuthorityProduction,
@@ -18,8 +20,8 @@ from spacegamebackend.utils.resource_requirement_component import (
     MineralCost,
 )
 from spacegamebackend.utils.structure_requirement_component import (
-    StructurePrerequisite,
-    Where,
+    StructureLocationSelector,
+    StructureRequirement,
 )
 
 
@@ -191,11 +193,18 @@ class FusionReactor(StructureTemplate):
             requirement_components=[
                 MineralCost(value=100),
                 EnergyCost(value=100),
-                StructurePrerequisite(
+                StructureRequirement(
                     title="Deuterium Extractor",
                     structure_type=StructureType.DEUTERIUM_EXTRACTOR,
-                    level=1,
-                    where=Where.LOCAL,
+                    required_structure_level=1,
+                    structure_location_selector=StructureLocationSelector.LOCAL,
+                    required_structure_level_scaling=1,
+                ),
+                ResearchRequirement(
+                    title="Fusion Power",
+                    research_type=ResearchType.FUSION_POWER,
+                    required_research_level=1,
+                    research_level_scaling=2,
                 ),
             ],
         )
@@ -231,10 +240,27 @@ class OrbitalGovernmentCenter(StructureTemplate):
             entity_slot_categories={EntitySlotCategory.ORBIT},
             production_components=[
                 AuthorityProduction(value=15),
-                EnergyProduction(value=20),
+                EnergyProduction(value=20, slot_usage=0),
             ],
             requirement_components=[
                 MineralCost(value=100),
                 EnergyCost(value=200),
             ],
         )
+
+
+# @StructureTemplate.register_structure_template
+# class MineralStorage(StructureTemplate):
+#     def __init__(self) -> None:
+#         super().__init__(
+#             structure_type=StructureType.MINERAL_STORAGE,
+#             title="Mineral Storage",
+#             description="A storage facility for minerals.",
+#             tier=0,
+#             entity_slot_categories={EntitySlotCategory.SURFACE},
+#             production_components=[],
+#             requirement_components=[
+#                 MineralCost(value=100),
+#                 EnergyCost(value=50),
+#             ],
+#         )

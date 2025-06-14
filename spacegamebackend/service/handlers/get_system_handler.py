@@ -1,11 +1,11 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from spacegamebackend.service.handlers.entity_finder import get_system
 
 
 class SystemRequest(BaseModel):
-    x: int
-    y: int
+    x: int = Field(ge=-10000, le=10000)
+    y: int = Field(ge=-10000, le=10000)
 
 
 class SystemResponse(BaseModel):

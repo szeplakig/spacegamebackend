@@ -1,6 +1,6 @@
 import random
 from abc import ABC, abstractmethod
-from collections.abc import Hashable
+from collections.abc import Hashable, Sequence
 from uuid import UUID
 
 from spacegamebackend.domain.models.space.component import Component
@@ -12,7 +12,7 @@ from spacegamebackend.domain.models.space.seeder import Seeder
 
 
 class EntityTemplate(ABC):
-    def __init__(self, *, component_templates: list[ComponentTemplate]) -> None:
+    def __init__(self, *, component_templates: Sequence[ComponentTemplate]) -> None:
         self.category = self.__class__.__qualname__
         self.component_templates = component_templates
 

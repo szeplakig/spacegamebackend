@@ -1,10 +1,6 @@
 from typing import ClassVar
 
 from spacegamebackend.domain.models.research.research_type import ResearchType
-from spacegamebackend.utils.production_component import (
-    ProductionComponent,
-    ProductionComponentStore,
-)
 from spacegamebackend.utils.requirement_component import (
     RequirementComponent,
     RequirementComponentStore,
@@ -12,9 +8,9 @@ from spacegamebackend.utils.requirement_component import (
 
 
 class ResearchTemplate:
-    research_options: ClassVar[dict[ResearchType, "ResearchTemplate"]] = {}
+    research_templates: ClassVar[dict[ResearchType, "ResearchTemplate"]] = {}
 
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
         *,
         research_type: ResearchType,
@@ -22,28 +18,43 @@ class ResearchTemplate:
         description: str,
         tier: int,
         requirement_components: list[RequirementComponent],
-        production_components: list[ProductionComponent],
+        level: int = 1,
     ) -> None:
-        ResearchTemplate.research_options[research_type] = self
         self.category = self.__class__.__qualname__
         self.research_type = research_type
         self.title = title
         self.description = description
         self.tier = tier
         self.requirement_components: RequirementComponentStore = RequirementComponentStore(requirement_components)
-        self.production_components: ProductionComponentStore = ProductionComponentStore(production_components)
+        self.level = level
 
-    def to_dict(self, *, level: int = 1) -> dict:
+    def to_dict(self) -> dict:
         return {
             "category": self.category,
             "research_type": self.research_type,
             "title": self.title,
             "description": self.description,
             "tier": self.tier,
-            "production_components": [
-                component.to_dict(level=level) for component in self.production_components.components.values()
-            ],
             "requirement_components": [
-                component.to_dict(level=level) for component in self.requirement_components.components.values()
+                component.to_dict() for component in self.requirement_components.components.values()
             ],
         }
+
+    def scale(self, *, level: int) -> "ResearchTemplate":
+        """Returns a new ResearchTemplate with scaled requirements."""
+        return ResearchTemplate(
+            research_type=self.research_type,
+            title=self.title,
+            description=self.description,
+            tier=self.tier,
+            requirement_components=[
+                component.scale(level=level) for component in self.requirement_components.components.values()
+            ],
+            level=level,
+        )
+
+    @classmethod
+    def register_research_template[ST: type](cls, research_template_class: ST) -> ST:
+        research_template = research_template_class()
+        cls.research_templates[research_template.research_type] = research_template
+        return research_template_class

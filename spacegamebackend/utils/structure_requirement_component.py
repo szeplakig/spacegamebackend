@@ -6,33 +6,62 @@ from spacegamebackend.utils.requirement_component import RequirementComponent
 from spacegamebackend.utils.sortable_component import ComponentKey
 
 
-class Where(StrEnum):
+class StructureLocationSelector(StrEnum):
     LOCAL = auto()
     GLOBAL = auto()
 
 
-class StructurePrerequisite(RequirementComponent):
+class StructureRequirement(RequirementComponent):
     @dataclass(slots=True, frozen=True)
     class Key(ComponentKey):
         structure_type: StructureType
-        level: int
-        where: Where
+        required_structure_level: int
+        structure_location_selector: StructureLocationSelector
 
-    def __init__(self, *, title: str, structure_type: StructureType, level: int, where: Where) -> None:
-        super().__init__(title=title)
+    def __init__(
+        self,
+        *,
+        title: str,
+        structure_type: StructureType,
+        required_structure_level: int,
+        structure_location_selector: StructureLocationSelector,
+        required_structure_level_scaling: int = 1,
+        level: int = 1,
+    ) -> None:
+        super().__init__(title=title, level=level)
         self.structure_type = structure_type
-        self.level = level
-        self.where = where
+        self.required_structure_level = required_structure_level
+        self.structure_location_selector = structure_location_selector
+        self.required_structure_level_scaling = required_structure_level_scaling
 
-    def to_dict(self, *, level: int = 1) -> dict:
+    def get_scaled_value(self) -> int:
+        return self.required_structure_level + self.required_structure_level_scaling * (self.level - 1)
+
+    def to_dict(self) -> dict:
         return {
             "type": "structure_prerequisite",
             "category": self.category,
             "title": self.title,
             "structure_type": self.structure_type,
-            "level": self.level * level,
-            "where": self.where,
+            "required_structure_level": self.get_scaled_value(),
+            "structure_location_selector": self.structure_location_selector,
+            "required_structure_level_scaling": self.required_structure_level_scaling,
+            "level": self.level,
         }
 
+    def scale(self, level: int) -> "StructureRequirement":
+        return StructureRequirement(
+            title=self.title,
+            structure_type=self.structure_type,
+            required_structure_level=self.required_structure_level,
+            structure_location_selector=self.structure_location_selector,
+            required_structure_level_scaling=self.required_structure_level_scaling,
+            level=level,
+        )
+
     def hash_key(self) -> Key:
-        return self.Key(self.structure_type, self.level, self.where)
+        return self.Key(
+            self.structure_type,
+            self.required_structure_level,
+            self.structure_location_selector,
+        )

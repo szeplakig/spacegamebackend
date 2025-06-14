@@ -9,12 +9,16 @@ from spacegamebackend.domain.models.research.user_research_repository import (
 from spacegamebackend.domain.models.resource.user_resource_repository import (
     UserResourcesRepository,
 )
-from spacegamebackend.domain.models.structure.structure_template import StructureTemplate
+from spacegamebackend.domain.models.structure.structure_template import (
+    StructureTemplate,
+)
 from spacegamebackend.domain.models.structure.user_structure_repository import (
     UserStructureRepository,
 )
 from spacegamebackend.domain.models.user_data_hub import UserDataHub
-from spacegamebackend.utils.resource_production_component import ResourceProductionComponent
+from spacegamebackend.utils.resource_production_component import (
+    ResourceProductionComponent,
+)
 from spacegamebackend.utils.resource_requirement_component import ResourceRequirement
 
 
@@ -81,7 +85,7 @@ class UpgradeStructureHandler:
             cur = current_resources.get_resource(res_req.resource_type)
             current_resources.set_resource(
                 res_req.resource_type,
-                cur.amount - res_req.get_scaled_value(level),
+                cur.amount - res_req.scale(level=level).get_scaled_value(),
                 cur.change,
             )
         for res_prod in structure_template.production_components.get_components_of_type(ResourceProductionComponent):

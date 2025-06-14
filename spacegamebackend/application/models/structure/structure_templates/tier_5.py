@@ -5,7 +5,6 @@ from spacegamebackend.utils.resource_production_component import EnergyUpkeep, R
 from spacegamebackend.utils.resource_requirement_component import AlloysCost, AntimatterCost, EnergyCost, MineralCost
 
 
-@StructureTemplate.register_structure_template
 class MegaDeepSpaceParticleAccelerator(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(

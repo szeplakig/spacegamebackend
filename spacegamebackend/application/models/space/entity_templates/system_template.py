@@ -9,9 +9,6 @@ from spacegamebackend.application.models.space.component_templates.structure_slo
     OutpostStructureSlotComponentTemplate,
 )
 from spacegamebackend.application.models.space.entitites.system import System
-from spacegamebackend.application.models.space.entity_templates.nebula import (
-    NebulaTemplate,
-)
 from spacegamebackend.application.models.space.entity_templates.solar_system_template import (
     SolarSystemTemplate,
 )
@@ -21,15 +18,17 @@ from spacegamebackend.domain.models.space.seeder import Seeder
 
 
 class SystemTemplate(EntityTemplate):
-    def __init__(self) -> None:
+    def __init__(self, entity_template: EntityTemplate) -> None:
         super().__init__(
             component_templates=[
                 OutpostStructureSlotComponentTemplate(),
                 EntitiesComponentTemplate(
                     title="Content",
                     weighted_entity_templates=[
-                        WeightedEntityTemplate(weight=10, entity_template=SolarSystemTemplate()),
-                        WeightedEntityTemplate(weight=1, entity_template=NebulaTemplate()),
+                        WeightedEntityTemplate(
+                            weight=1,
+                            entity_template=entity_template,
+                        ),
                     ],
                     min_entities=1,
                     max_entities=1,

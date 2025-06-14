@@ -46,9 +46,7 @@ class GetStructuresHandler:
         self.user_research_repository = user_research_repository
         self.user_structure_repository = user_structure_repository
 
-    def handle(
-        self, request: GetStructuresRequest, user_id: str
-    ) -> GetStructuresResponse:
+    def handle(self, request: GetStructuresRequest, user_id: str) -> GetStructuresResponse:
         built_structures = self.user_structure_repository.get_user_structures(
             user_id=user_id,
             entity_id=request.entity_id,
@@ -62,9 +60,7 @@ class GetStructuresHandler:
         return GetStructuresResponse(
             built_structures=[
                 {
-                    **StructureTemplate.structure_templates[
-                        structure.structure_type
-                    ].to_dict(),
+                    **StructureTemplate.structure_templates[structure.structure_type].to_dict(),
                     **structure.to_dict(),
                 }
                 for structure in built_structures

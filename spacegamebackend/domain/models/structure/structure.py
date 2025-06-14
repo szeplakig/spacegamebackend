@@ -5,7 +5,9 @@ from spacegamebackend.domain.models.structure.structure_type import StructureTyp
 from spacegamebackend.utils.int_to_roman import int_to_roman
 
 if TYPE_CHECKING:
-    from spacegamebackend.domain.models.structure.structure_template import StructureTemplate
+    from spacegamebackend.domain.models.structure.structure_template import (
+        StructureTemplate,
+    )
 
 
 class Structure:
@@ -41,7 +43,7 @@ class Structure:
                 for component in self.structure_template.production_components.get_components()
             ],
             "requirement_components": [
-                component.to_dict(level=self.level + 1)
+                component.scale(level=self.level + 1).to_dict()
                 for component in self.structure_template.requirement_components.get_components()
             ],
         }

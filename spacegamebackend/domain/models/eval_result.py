@@ -1,7 +1,3 @@
-from types import UnionType
-from typing import Any
-
-
 class EvalResult:
     def __init__(self, result: bool, detail: str | None = None) -> None:  # noqa: FBT001
         self.result = result

@@ -18,17 +18,17 @@ class ResourceProductionComponent(ProductionComponent):
         resource_type: ResourceType,
         slot_usage: int,
         value: int,
-        scaling_factor: float = 1.15,
+        scaling_factor: float = 1,
+        level: int = 1,
     ) -> None:
-        super().__init__(title=title)
+        super().__init__(title=title, level=level)
         self.resource_type = resource_type
         self.slot_usage = slot_usage
         self.value = value
         self.scaling_factor = scaling_factor
 
     def get_scaled_value(self, level: int) -> int:
-        # scaled_value = self.value * (self.scaling_factor**level)
-        scaled_value = self.value
+        scaled_value = self.value * (self.scaling_factor ** (level - 1))
         magnitude = 10 ** int(len(str(int(abs(scaled_value)))) - 1)
         nice_value = round(scaled_value / magnitude) * magnitude
         return int(nice_value)
@@ -39,19 +39,28 @@ class ResourceProductionComponent(ProductionComponent):
             "category": self.category,
             "title": self.title,
             "resource_type": self.resource_type,
-            "slot_usage": self.slot_usage * level,
-            "value": self.get_scaled_value(level),
+            "slot_usage": self.slot_usage,
+            "value": self.value,
             "scaling_factor": self.scaling_factor,
+            "level": level,
         }
 
     def hash_key(self) -> Key:
         return self.Key(self.resource_type, self.slot_usage)
 
+    def scale(self, *, level: int) -> "ResourceProductionComponent":
+        return ResourceProductionComponent(
+            title=self.title,
+            resource_type=self.resource_type,
+            slot_usage=self.slot_usage * level,
+            value=self.get_scaled_value(level),
+            scaling_factor=self.scaling_factor,
+            level=level,
+        )
+
 
 class EnergyProduction(ResourceProductionComponent):
-    def __init__(
-        self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15
-    ) -> None:
+    def __init__(self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1) -> None:
         super().__init__(
             title="Energy Production",
             resource_type=ResourceType.ENERGY,
@@ -62,9 +71,7 @@ class EnergyProduction(ResourceProductionComponent):
 
 
 class MineralsProduction(ResourceProductionComponent):
-    def __init__(
-        self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15
-    ) -> None:
+    def __init__(self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1) -> None:
         super().__init__(
             title="Minerals Production",
             resource_type=ResourceType.MINERALS,
@@ -75,9 +82,7 @@ class MineralsProduction(ResourceProductionComponent):
 
 
 class AlloysProduction(ResourceProductionComponent):
-    def __init__(
-        self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15
-    ) -> None:
+    def __init__(self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1) -> None:
         super().__init__(
             title="Alloys Production",
             resource_type=ResourceType.ALLOYS,
@@ -88,9 +93,7 @@ class AlloysProduction(ResourceProductionComponent):
 
 
 class ResearchProduction(ResourceProductionComponent):
-    def __init__(
-        self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15
-    ) -> None:
+    def __init__(self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1) -> None:
         super().__init__(
             title="Research Production",
             resource_type=ResourceType.RESEARCH,
@@ -101,9 +104,7 @@ class ResearchProduction(ResourceProductionComponent):
 
 
 class AntimatterProduction(ResourceProductionComponent):
-    def __init__(
-        self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1.15
-    ) -> None:
+    def __init__(self, *, value: int, slot_usage: int = 1, scaling_factor: float = 1) -> None:
         super().__init__(
             title="Antimatter Production",
             resource_type=ResourceType.ANTIMATTER,
@@ -114,9 +115,7 @@ class AntimatterProduction(ResourceProductionComponent):
 
 
 class AuthorityProduction(ResourceProductionComponent):
-    def __init__(
-        self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15
-    ) -> None:
+    def __init__(self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1) -> None:
         super().__init__(
             title="Authority Production",
             resource_type=ResourceType.AUTHORITY,
@@ -127,9 +126,7 @@ class AuthorityProduction(ResourceProductionComponent):
 
 
 class EnergyUpkeep(ResourceProductionComponent):
-    def __init__(
-        self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15
-    ) -> None:
+    def __init__(self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1) -> None:
         super().__init__(
             title="Energy Upkeep",
             resource_type=ResourceType.ENERGY,
@@ -140,9 +137,7 @@ class EnergyUpkeep(ResourceProductionComponent):
 
 
 class AuthorityUpkeep(ResourceProductionComponent):
-    def __init__(
-        self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15
-    ) -> None:
+    def __init__(self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1) -> None:
         super().__init__(
             title="Authority Upkeep",
             resource_type=ResourceType.AUTHORITY,
@@ -153,9 +148,7 @@ class AuthorityUpkeep(ResourceProductionComponent):
 
 
 class MineralsUpkeep(ResourceProductionComponent):
-    def __init__(
-        self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1.15
-    ) -> None:
+    def __init__(self, *, value: int, slot_usage: int = 0, scaling_factor: float = 1) -> None:
         super().__init__(
             title="Minerals Upkeep",
             resource_type=ResourceType.MINERALS,

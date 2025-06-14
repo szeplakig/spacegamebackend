@@ -41,3 +41,8 @@ class UserStructureRepository(ABC):
     @abstractmethod
     def delete_user_structure(self, *, structure_id: str) -> None:
         """Delete a structure. If the structure does not exist, raise an exception."""
+
+    @abstractmethod
+    def get_user_structure_levels(self, *, user_id: str, entity_id: str | None = None) -> dict[StructureType, int]:
+        """Get the levels of structures for a user at a specific entity.
+        If the user does not exist, raise an exception."""

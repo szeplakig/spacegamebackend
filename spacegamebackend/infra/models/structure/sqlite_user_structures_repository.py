@@ -1,5 +1,5 @@
 from sqlalchemy import create_engine
-from sqlmodel import Session, and_, select
+from sqlmodel import Session, and_, func, select
 
 from spacegamebackend.domain.models.structure.structure import Structure
 from spacegamebackend.domain.models.structure.structure_status import StructureStatus
@@ -156,3 +156,17 @@ class SqliteUserStructureRepository(UserStructureRepository):
                 session.commit()
             else:
                 raise Exception("Structure not found")
+
+    def get_user_structure_levels(self, *, user_id: str, entity_id: str | None = None) -> dict[StructureType, int]:
+        """Get the max levels of structures for a user, optionally filtered by entity.
+        This method returns a dictionary where the keys are StructureType and the values are the maximum levels.
+        If the user does not exist, raise an exception."""
+        with Session(self.engine) as session:
+            query = select(StructuresModel.structure_type, func.max(StructuresModel.level)).where(
+                StructuresModel.user_id == user_id
+            )
+            if entity_id is not None:
+                query = query.where(StructuresModel.entity_id == entity_id)
+            query = query.group_by(StructuresModel.structure_type)
+            results = session.exec(query).all()
+            return {StructureType(result[0]): result[1] for result in results} if results else {}

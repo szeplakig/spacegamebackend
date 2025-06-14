@@ -28,8 +28,8 @@ from spacegamebackend.utils.resource_production_component import (
 )
 from spacegamebackend.utils.resource_requirement_component import ResourceRequirement
 from spacegamebackend.utils.structure_requirement_component import (
-    StructurePrerequisite,
-    Where,
+    StructureLocationSelector,
+    StructureRequirement,
 )
 
 
@@ -48,9 +48,7 @@ class StructureBuildRequirementEvaluator:
         ]
     ] = {}
 
-    def __init__(
-        self, user_data_hub: UserDataHub, user_id: str, entity_id: str, x: int, y: int
-    ) -> None:
+    def __init__(self, user_data_hub: UserDataHub, user_id: str, entity_id: str, x: int, y: int) -> None:
         self.user_data_hub = user_data_hub
         self.user_id = user_id
         self.entity_id = entity_id
@@ -66,12 +64,10 @@ class StructureBuildRequirementEvaluator:
         evaluators: list[Callable[[], EvalResult]] = [
             self._evaluate_entity_exists,
             partial(
-                self._evaluate_system_has_outpost, structure_template=structure_template
-            ),
-            partial(
                 self._evaluate_structure_type_not_built_on_entity,
                 structure_template=structure_template,
             ),
+            partial(self._evaluate_system_has_outpost, structure_template=structure_template),
             partial(
                 self._evaluate_components,
                 structure_template.requirement_components.get_components(
@@ -80,9 +76,7 @@ class StructureBuildRequirementEvaluator:
             ),
             partial(
                 self._evaluate_components,
-                structure_template.production_components.get_components_of_type(
-                    ResourceProductionComponent
-                ),
+                structure_template.production_components.get_components_of_type(ResourceProductionComponent),
             ),
             partial(
                 self._evaluate_structure_slot_categories,
@@ -152,11 +146,10 @@ class StructureBuildRequirementEvaluator:
     def _evaluate_system_has_outpost(
         self,
         structure_template: StructureTemplate,
+        *,
         upgrade: bool = False,
     ) -> EvalResult:
-        has_outpost = self.user_data_hub.has_structure_at(
-            x=self.x, y=self.y, structure_type=StructureType.OUTPOST
-        )
+        has_outpost = self.user_data_hub.has_structure_at(x=self.x, y=self.y, structure_type=StructureType.OUTPOST)
         if has_outpost and structure_template.structure_type is StructureType.OUTPOST:
             if upgrade:
                 return EvalResult(True)
@@ -171,9 +164,7 @@ class StructureBuildRequirementEvaluator:
             )
         return EvalResult(True)
 
-    def _evaluate_structure_type_not_built_on_entity(
-        self, structure_template: StructureTemplate
-    ) -> EvalResult:
+    def _evaluate_structure_type_not_built_on_entity(self, structure_template: StructureTemplate) -> EvalResult:
         # Check if the user already has a structure of the same type
         if any(
             structure.structure_type == structure_template.structure_type
@@ -182,17 +173,11 @@ class StructureBuildRequirementEvaluator:
             return EvalResult(False, "Structure already exists")
         return EvalResult(True)
 
-    def _evaluate_structure_slot_categories(
-        self, structure_template: StructureTemplate
-    ) -> EvalResult:
+    def _evaluate_structure_slot_categories(self, structure_template: StructureTemplate) -> EvalResult:
         # Check if entity has the required slot categories
         entity = get_entity_checked(x=self.x, y=self.y, entity_id=self.entity_id)
-        if not (
-            entity.entity_slot_categories & structure_template.entity_slot_categories
-        ):
-            return EvalResult(
-                False, "Entity does not have the required slot categories"
-            )
+        if not (entity.entity_slot_categories & structure_template.entity_slot_categories):
+            return EvalResult(False, "Entity does not have the required slot categories")
         return EvalResult(True)
 
     def _evaluate_entity_has_enough_resource_slots(
@@ -200,23 +185,15 @@ class StructureBuildRequirementEvaluator:
         structure_template: StructureTemplate,
     ) -> EvalResult:
         # Check if the the entity has enough resource slots to build the structure
-        structure_resource_usages = Counter(
-            structure_template.get_resource_type_usages(level=1)
-        )
+        structure_resource_usages = Counter(structure_template.get_resource_type_usages(level=1))
         if not structure_resource_usages:
             return EvalResult(True)
 
         entity = get_entity_checked(x=self.x, y=self.y, entity_id=self.entity_id)
         current_resource_usages = sum(
             (
-                Counter(
-                    structure.structure_template.get_resource_type_usages(
-                        structure.level
-                    )
-                )
-                for structure in self.user_data_hub.get_structures(
-                    entity_id=self.entity_id
-                )
+                Counter(structure.structure_template.get_resource_type_usages(structure.level))
+                for structure in self.user_data_hub.get_structures(entity_id=self.entity_id)
             ),
             Counter(),
         )
@@ -244,8 +221,7 @@ class StructureBuildRequirementEvaluator:
         for component in entity.components:
             if (
                 isinstance(component, StructureSlotComponent)
-                and structure_template.structure_type
-                in component.allowed_structure_types
+                and structure_template.structure_type in component.allowed_structure_types
             ):
                 structure_slots_available += component.structure_slots
                 break
@@ -264,8 +240,7 @@ class StructureBuildRequirementEvaluator:
         for component in entity.components:
             if (
                 isinstance(component, StructureSlotComponent)
-                and structure_template.structure_type
-                in component.allowed_structure_types
+                and structure_template.structure_type in component.allowed_structure_types
             ):
                 structure_slots_available += component.structure_slots
                 break
@@ -273,23 +248,15 @@ class StructureBuildRequirementEvaluator:
         if structure_slots_available < 1:
             return EvalResult(False, "Not enough building slots")
 
-        structure_resource_usages = Counter(
-            structure_template.get_resource_type_usages(level=1)
-        )
+        structure_resource_usages = Counter(structure_template.get_resource_type_usages(level=1))
         if not structure_resource_usages:
             return EvalResult(True)
 
         entity = get_entity_checked(x=self.x, y=self.y, entity_id=self.entity_id)
         current_resource_usages = sum(
             (
-                Counter(
-                    structure.structure_template.get_resource_type_usages(
-                        structure.level
-                    )
-                )
-                for structure in self.user_data_hub.get_structures(
-                    entity_id=self.entity_id
-                )
+                Counter(structure.structure_template.get_resource_type_usages(structure.level))
+                for structure in self.user_data_hub.get_structures(entity_id=self.entity_id)
             ),
             Counter(),
         )
@@ -314,10 +281,7 @@ class StructureBuildRequirementEvaluator:
         structure: Structure | None = None,
     ) -> EvalResult:
         return sum(
-            (
-                self._evaluate_component(component, structure)
-                for component in components
-            ),
+            (self._evaluate_component(component, structure) for component in components),
             EvalResult(True),
         )
 
@@ -327,16 +291,12 @@ class StructureBuildRequirementEvaluator:
         structure: Structure | None = None,
     ) -> EvalResult:
         for component_type, evaluator in self.component_evaluators.items():
-            if isinstance(component, component_type) or issubclass(
-                component_type, type(component)
-            ):
+            if isinstance(component, component_type) or issubclass(component_type, type(component)):
                 return evaluator(self, component, structure)
         raise ValueError(f"No evaluator found for component type {type(component)}")
 
     @classmethod
-    def register_evaluator(
-        cls, component_type: type[RequirementComponent | ProductionComponent]
-    ) -> Callable:
+    def register_evaluator(cls, component_type: type[RequirementComponent | ProductionComponent]) -> Callable:
         def decorator(func: Callable) -> Callable:
             cls.component_evaluators[component_type] = func
             return func
@@ -352,13 +312,11 @@ def evaluate_research_requirement(
 ) -> EvalResult:
     research = evaluator.user_data_hub.get_research()
     level = 1 if not structure else structure.level + 1
-    if research.get(component.research_type, 0) >= component.get_scaled_value(level):
+    if research.get(component.research_type, 0) >= component.scale(level=level).get_scaled_value():
         return EvalResult(True)
     return EvalResult(
         False,
-        (
-            f"Missing research {component.research_type} amount {component.get_scaled_value(level=level)}"
-        ),
+        (f"Missing research {component.research_type} amount {component.scale(level=level).get_scaled_value()}"),
     )
 
 
@@ -370,44 +328,43 @@ def evaluate_resource_requirement(
 ) -> EvalResult:
     resources = evaluator.user_data_hub.get_resources()
     level = 1 if not structure else structure.level + 1
-    if resources.get_resource(
-        component.resource_type
-    ).current_amount() >= component.get_scaled_value(level=level):
+    if (
+        resources.get_resource(component.resource_type).current_amount()
+        >= component.scale(level=level).get_scaled_value()
+    ):
         return EvalResult(True)
     return EvalResult(
         False,
         (
-            f"Missing ({component.get_scaled_value(level=level) - resources.get_resource(
+            f"Missing ({component.scale(level=level).get_scaled_value() - resources.get_resource(
         component.resource_type
     ).amount}) {component.resource_type}"
         ),
     )
 
 
-@StructureBuildRequirementEvaluator.register_evaluator(StructurePrerequisite)
+@StructureBuildRequirementEvaluator.register_evaluator(StructureRequirement)
 def evaluate_structure_prerequisite(
     evaluator: "StructureBuildRequirementEvaluator",
-    component: StructurePrerequisite,
+    component: StructureRequirement,
     structure: Structure | None = None,
 ) -> EvalResult:
-    if component.where is Where.GLOBAL:
+    if component.structure_location_selector is StructureLocationSelector.GLOBAL:
         structures = evaluator.user_data_hub.get_all_structures()
-    elif component.where is Where.LOCAL:
-        structures = evaluator.user_data_hub.get_structures(
-            entity_id=evaluator.entity_id
-        )
+    elif component.structure_location_selector is StructureLocationSelector.LOCAL:
+        structures = evaluator.user_data_hub.get_structures(entity_id=evaluator.entity_id)
     else:
         raise ValueError(f"Invalid where value {component}")
     level = 1 if not structure else structure.level + 1
     if any(
         structure.structure_type == component.structure_type
-        and structure.level >= component.level + level
+        and structure.level >= component.required_structure_level + level
         for structure in structures
     ):
         return EvalResult(True)
     return EvalResult(
         False,
-        f"Missing structure {component.structure_type} level {component.level}",
+        f"Missing structure {component.structure_type} level {component.required_structure_level}",
     )
 
 
@@ -420,11 +377,7 @@ def evaluate_resource_production_component(
     user_resources = evaluator.user_data_hub.get_resources()
     user_resources.update_resources()
     level = 1 if not structure else structure.level + 1
-    if (
-        user_resources.get_resource(component.resource_type).change
-        + component.get_scaled_value(level=level)
-        >= 0
-    ):
+    if user_resources.get_resource(component.resource_type).change + component.get_scaled_value(level=level) >= 0:
         return EvalResult(True)
     return EvalResult(
         False,

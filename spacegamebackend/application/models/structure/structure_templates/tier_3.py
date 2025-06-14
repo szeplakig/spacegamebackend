@@ -5,7 +5,6 @@ from spacegamebackend.utils.resource_production_component import AntimatterProdu
 from spacegamebackend.utils.resource_requirement_component import AlloysCost, MineralCost
 
 
-@StructureTemplate.register_structure_template
 class DarkMatterEngine(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(

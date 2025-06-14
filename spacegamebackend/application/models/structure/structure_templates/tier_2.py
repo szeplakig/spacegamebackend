@@ -5,7 +5,6 @@ from spacegamebackend.utils.resource_production_component import EnergyUpkeep, R
 from spacegamebackend.utils.resource_requirement_component import MineralCost
 
 
-@StructureTemplate.register_structure_template
 class DeepSpaceResearchStation(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(

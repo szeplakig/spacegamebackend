@@ -17,26 +17,38 @@ class ResourceRequirement(RequirementComponent):
         resource_type: ResourceType,
         value: int,
         scaling_factor: float,
+        level: int = 1,
     ) -> None:
-        super().__init__(title=title)
+        super().__init__(title=title, level=level)
         self.resource_type = resource_type
         self.value = value
         self.scaling_factor = scaling_factor
 
-    def get_scaled_value(self, level: int) -> int:
-        scaled_value = self.value * (self.scaling_factor**level)
+    def get_scaled_value(self) -> int:
+        scaled_value = self.value * (self.scaling_factor**self.level)
         magnitude = 10 ** int(len(str(int(abs(scaled_value)))) - 1)
         nice_value = round(scaled_value / magnitude) * magnitude
         return int(nice_value)
 
-    def to_dict(self, *, level: int = 1) -> dict:
+    def to_dict(self) -> dict:
         return {
             "type": "resource_requirement",
             "category": self.category,
             "title": self.title,
             "resource_type": self.resource_type,
-            "value": self.get_scaled_value(level),
+            "value": self.get_scaled_value(),
+            "scaling_factor": self.scaling_factor,
+            "level": self.level,
         }
+
+    def scale(self, level: int) -> "ResourceRequirement":
+        return ResourceRequirement(
+            title=self.title,
+            resource_type=self.resource_type,
+            value=self.value,
+            scaling_factor=self.scaling_factor,
+            level=level,
+        )
 
     def hash_key(self) -> Key:
         return self.Key(

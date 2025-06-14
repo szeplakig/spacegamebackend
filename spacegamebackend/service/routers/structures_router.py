@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, Query
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from spacegamebackend.domain.models.research.user_research_repository import (
     UserResearchRepository,
@@ -40,8 +40,8 @@ from spacegamebackend.service.handlers.upgrade_structure_handler import (
 
 
 class CoordianteData(BaseModel):
-    x: int
-    y: int
+    x: int = Field(ge=-10000, le=10000)
+    y: int = Field(ge=-10000, le=10000)
 
 
 def create_structures_router() -> APIRouter:

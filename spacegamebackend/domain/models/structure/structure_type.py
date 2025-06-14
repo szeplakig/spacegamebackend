@@ -44,3 +44,23 @@ class StructureType(StrEnum):
             StructureType.MEGA_DEEP_SPACE_PARTICLE_ACCELERATOR,
             StructureType.DARK_MATTER_ENGINE,
         }
+
+    @staticmethod
+    @lru_cache(1)
+    def tier_2() -> set["StructureType"]:
+        return set()
+
+    @staticmethod
+    @lru_cache(1)
+    def tier_3() -> set["StructureType"]:
+        return set()
+
+    @staticmethod
+    @lru_cache(1)
+    def tier_4() -> set["StructureType"]:
+        return set()
+
+    @staticmethod
+    @lru_cache(1)
+    def tier_5() -> set["StructureType"]:
+        return set()

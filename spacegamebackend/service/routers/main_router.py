@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from spacegamebackend.service.routers.research_router import create_research_router
 from spacegamebackend.service.routers.structures_router import create_structures_router
 from spacegamebackend.service.routers.system_router import create_system_router
 from spacegamebackend.service.routers.user_resources_router import (
@@ -10,7 +11,6 @@ from spacegamebackend.service.routers.user_router import create_user_router
 
 origins = [
     "http://localhost:3000",
-    # Add other origins if necessary
 ]
 
 
@@ -19,10 +19,10 @@ def create_main_router() -> FastAPI:
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=origins,  # Allows requests from listed origins
+        allow_origins=origins,
         allow_credentials=True,
-        allow_methods=["*"],  # Allows all HTTP methods (GET, POST, etc.)
-        allow_headers=["*"],  # Allows all headers
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     app.include_router(create_user_router())
@@ -32,5 +32,7 @@ def create_main_router() -> FastAPI:
     app.include_router(create_structures_router())
 
     app.include_router(create_user_resources_router())
+
+    app.include_router(create_research_router())
 
     return app

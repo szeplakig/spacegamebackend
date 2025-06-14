@@ -30,8 +30,8 @@ class StructureTemplate:
         entity_slot_categories: set[EntitySlotCategory],
         requirement_components: list[RequirementComponent],
         production_components: list[ProductionComponent],
+        level: int = 1,
     ) -> None:
-        StructureTemplate.structure_templates[structure_type] = self
         self.category = self.__class__.__qualname__
         self.structure_type = structure_type
         self.title = title
@@ -40,8 +40,9 @@ class StructureTemplate:
         self.entity_slot_categories = entity_slot_categories
         self.requirement_components: RequirementComponentStore = RequirementComponentStore(requirement_components)
         self.production_components: ProductionComponentStore = ProductionComponentStore(production_components)
+        self.level = level
 
-    def to_dict(self, *, level: int = 1) -> dict:
+    def to_dict(self) -> dict:
         return {
             "category": self.category,
             "structure_type": self.structure_type,
@@ -50,10 +51,10 @@ class StructureTemplate:
             "tier": self.tier,
             "entity_slot_categories": list(self.entity_slot_categories),
             "production_components": [
-                component.to_dict(level=level) for component in self.production_components.components.values()
+                component.to_dict(level=self.level) for component in self.production_components.components.values()
             ],
             "requirement_components": [
-                component.to_dict(level=level) for component in self.requirement_components.components.values()
+                component.to_dict() for component in self.requirement_components.components.values()
             ],
         }
 
@@ -66,6 +67,23 @@ class StructureTemplate:
             if component.slot_usage > 0:
                 usages[component.resource_type] += component.slot_usage * level
         return usages
+
+    def scale(self, *, level: int) -> "StructureTemplate":
+        """Scale the structure template to a given level."""
+        return StructureTemplate(
+            structure_type=self.structure_type,
+            title=self.title,
+            description=self.description,
+            tier=self.tier,
+            entity_slot_categories=self.entity_slot_categories,
+            requirement_components=[
+                component.scale(level=level) for component in self.requirement_components.components.values()
+            ],
+            production_components=[
+                component.scale(level=level) for component in self.production_components.components.values()
+            ],
+            level=level,
+        )
 
     @classmethod
     def register_structure_template[ST: type](cls, structure_template_class: ST) -> ST:
