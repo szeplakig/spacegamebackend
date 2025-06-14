@@ -4,7 +4,7 @@ from spacegamebackend.application.models.space.component_templates.resource_comp
     ResearchComponentTemplate,
 )
 from spacegamebackend.application.models.space.component_templates.structure_slot_component_template import (
-    Tier5SlotComponentTemplate,
+    StructureSlotaComponentTemplate,
 )
 from spacegamebackend.application.models.space.entitites.void import Void
 from spacegamebackend.domain.models.space.entity import Entity
@@ -17,7 +17,7 @@ class VoidTemplate(EntityTemplate):
         super().__init__(
             component_templates=[
                 ResearchComponentTemplate(min_value=5, max_value=20),
-                Tier5SlotComponentTemplate(
+                StructureSlotaComponentTemplate(
                     min_slots=1,
                     max_slots=5,
                 ),

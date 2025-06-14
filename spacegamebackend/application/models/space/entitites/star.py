@@ -10,6 +10,7 @@ class Star(Entity):
             entity_id=entity_id,
             entity_slot_categories={
                 EntitySlotCategory.ORBIT,
+                EntitySlotCategory.MEGA_STRUCTURE,
             },
             components=components,
         )

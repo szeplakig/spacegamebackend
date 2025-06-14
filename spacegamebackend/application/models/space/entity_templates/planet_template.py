@@ -10,7 +10,7 @@ from spacegamebackend.application.models.space.component_templates.resource_comp
     ResearchComponentTemplate,
 )
 from spacegamebackend.application.models.space.component_templates.structure_slot_component_template import (
-    Tier0SlotComponentTemplate,
+    StructureSlotaComponentTemplate,
 )
 from spacegamebackend.application.models.space.entitites.planet import Planet
 from spacegamebackend.application.models.space.entity_templates.moon_template import (
@@ -26,7 +26,7 @@ class PlanetTemplateBase(EntityTemplate):
     def __init__(self, *, title: str, entity_slot_categories: set[EntitySlotCategory] | None = None) -> None:
         super().__init__(
             component_templates=[
-                Tier0SlotComponentTemplate(
+                StructureSlotaComponentTemplate(
                     min_slots=1,
                     max_slots=5,
                 ),

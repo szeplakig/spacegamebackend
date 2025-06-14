@@ -14,7 +14,7 @@ class Void(Entity):
             title="Void",
             entity_id=entity_id,
             entity_slot_categories={
-                EntitySlotCategory.DEEP_SPACE,
+                EntitySlotCategory.MEGA_STRUCTURE,
             },
             components=components,
         )

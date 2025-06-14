@@ -18,6 +18,7 @@ from spacegamebackend.service.handlers.get_system_handler import GetSystemHandle
 from spacegamebackend.service.handlers.get_user_resource_handler import (
     GetUserResourcesHandler,
 )
+from spacegamebackend.service.handlers.time_warp_handler import TimeWarpHandler
 
 
 def get__get_system_handler_dependency() -> GetSystemHandler:
@@ -50,3 +51,9 @@ def get__get_user_resources_handler_dependency(
         user_resources_repository=user_resource_repository,
         user_structure_repository=user_structure_repository,
     )
+
+
+def get__time_warp_handler_dependency(
+    user_resource_repository: UserResourcesRepository = Depends(user_resources_repository_dependency),
+) -> TimeWarpHandler:
+    return TimeWarpHandler(user_resource_repository=user_resource_repository)

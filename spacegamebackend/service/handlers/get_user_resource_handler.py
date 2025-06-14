@@ -13,6 +13,7 @@ from spacegamebackend.domain.models.resource.user_resource_repository import (
 from spacegamebackend.domain.models.structure.user_structure_repository import (
     UserStructureRepository,
 )
+from spacegamebackend.utils.resource_capacity_component import ResourceCapacityComponent
 from spacegamebackend.utils.resource_production_component import (
     ResourceProductionComponent,
 )
@@ -48,6 +49,7 @@ class GetUserResourcesHandler:
         resources.update_resources()
         for resource_type in ResourceType:
             new_resources.get_resource(resource_type).amount = resources.get_resource(resource_type).amount
+            new_resources.get_resource(resource_type).updated_at = resources.get_resource(resource_type).updated_at
         for structure in user_structures:
             for component in structure.structure_template.production_components.get_components_of_type(
                 ResourceProductionComponent
@@ -55,5 +57,12 @@ class GetUserResourcesHandler:
                 new_resources.get_resource(component.resource_type).change += component.get_scaled_value(
                     structure.level
                 )
+            for component in structure.structure_template.capacity_components.get_components_of_type(
+                ResourceCapacityComponent
+            ):
+                resource = new_resources.get_resource(component.resource_type)
+                if resource.capacity is None:
+                    resource.capacity = 0
+                resource.capacity += component.get_scaled_value()
         self.user_resources_repository.set_user_resources(user_id=user_id, resources=new_resources)
         return UserResourcesResponse.model_validate(new_resources)

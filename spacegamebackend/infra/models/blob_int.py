@@ -7,6 +7,7 @@ class BlobInt(TypeDecorator):
     """Store integers as a JSON-encoded string in a BLOB column."""
 
     impl = LargeBinary
+    cache_ok = True
 
     def process_bind_param(self, value, dialect):  # noqa: ANN001, ANN201
         if value is not None:

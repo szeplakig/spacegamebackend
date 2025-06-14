@@ -12,6 +12,10 @@ from spacegamebackend.utils.requirement_component import (
     RequirementComponent,
     RequirementComponentStore,
 )
+from spacegamebackend.utils.resource_capacity_component import (
+    ResourceCapacityComponent,
+    ResourceCapacityComponentStore,
+)
 from spacegamebackend.utils.resource_production_component import (
     ResourceProductionComponent,
 )
@@ -30,6 +34,7 @@ class StructureTemplate:
         entity_slot_categories: set[EntitySlotCategory],
         requirement_components: list[RequirementComponent],
         production_components: list[ProductionComponent],
+        capacity_components: list[ResourceCapacityComponent],
         level: int = 1,
     ) -> None:
         self.category = self.__class__.__qualname__
@@ -40,6 +45,7 @@ class StructureTemplate:
         self.entity_slot_categories = entity_slot_categories
         self.requirement_components: RequirementComponentStore = RequirementComponentStore(requirement_components)
         self.production_components: ProductionComponentStore = ProductionComponentStore(production_components)
+        self.capacity_components: ResourceCapacityComponentStore = ResourceCapacityComponentStore(capacity_components)
         self.level = level
 
     def to_dict(self) -> dict:
@@ -56,6 +62,10 @@ class StructureTemplate:
             "requirement_components": [
                 component.to_dict() for component in self.requirement_components.components.values()
             ],
+            "capacity_components": [
+                component.to_dict(level=self.level) for component in self.capacity_components.components.values()
+            ],
+            "level": self.level,
         }
 
     def get_resource_type_usages(
@@ -81,6 +91,9 @@ class StructureTemplate:
             ],
             production_components=[
                 component.scale(level=level) for component in self.production_components.components.values()
+            ],
+            capacity_components=[
+                component.scale(level=level) for component in self.capacity_components.components.values()
             ],
             level=level,
         )

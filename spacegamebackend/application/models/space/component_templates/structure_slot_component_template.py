@@ -41,7 +41,6 @@ class OutpostStructureSlotComponentTemplate(StructureSlotComponentTemplate):
             max_slots=1,
             allowed_structure_types={
                 StructureType.OUTPOST,
-                StructureType.STARTER_OUTPOST,
             },
         )
 
@@ -56,61 +55,11 @@ class OrbitalGovernmentCenterStructureSlotComponentTemplate(StructureSlotCompone
         )
 
 
-class Tier0SlotComponentTemplate(StructureSlotComponentTemplate):
+class StructureSlotaComponentTemplate(StructureSlotComponentTemplate):
     def __init__(self, min_slots: int, max_slots: int) -> None:
         super().__init__(
-            title="Tier 0 slots",
+            title="Structures",
             min_slots=min_slots,
             max_slots=max_slots,
-            allowed_structure_types=StructureType.tier_0(),
-        )
-
-
-class Tier1SlotComponentTemplate(StructureSlotComponentTemplate):
-    def __init__(self, min_slots: int, max_slots: int) -> None:
-        super().__init__(
-            title="Tier 1 slots",
-            min_slots=min_slots,
-            max_slots=max_slots,
-            allowed_structure_types=StructureType.tier_1(),
-        )
-
-
-class Tier2SlotComponentTemplate(StructureSlotComponentTemplate):
-    def __init__(self, min_slots: int, max_slots: int) -> None:
-        super().__init__(
-            title="Tier 2 slots",
-            min_slots=min_slots,
-            max_slots=max_slots,
-            allowed_structure_types=StructureType.tier_2(),
-        )
-
-
-class Tier3SlotComponentTemplate(StructureSlotComponentTemplate):
-    def __init__(self, min_slots: int, max_slots: int) -> None:
-        super().__init__(
-            title="Tier 3 slots",
-            min_slots=min_slots,
-            max_slots=max_slots,
-            allowed_structure_types=StructureType.tier_3(),
-        )
-
-
-class Tier4SlotComponentTemplate(StructureSlotComponentTemplate):
-    def __init__(self, min_slots: int, max_slots: int) -> None:
-        super().__init__(
-            title="Tier 4 slots",
-            min_slots=min_slots,
-            max_slots=max_slots,
-            allowed_structure_types=StructureType.tier_4(),
-        )
-
-
-class Tier5SlotComponentTemplate(StructureSlotComponentTemplate):
-    def __init__(self, min_slots: int, max_slots: int) -> None:
-        super().__init__(
-            title="Tier 5 slots",
-            min_slots=min_slots,
-            max_slots=max_slots,
-            allowed_structure_types=StructureType.tier_5(),
+            allowed_structure_types=StructureType.non_unique(),
         )

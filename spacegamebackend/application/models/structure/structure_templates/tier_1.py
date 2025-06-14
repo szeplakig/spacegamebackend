@@ -1,5 +1,7 @@
 from spacegamebackend.domain.models.space.entity_slot_category import EntitySlotCategory
-from spacegamebackend.domain.models.structure.structure_template import StructureTemplate
+from spacegamebackend.domain.models.structure.structure_template import (
+    StructureTemplate,
+)
 from spacegamebackend.domain.models.structure.structure_type import StructureType
 from spacegamebackend.utils.resource_production_component import EnergyProduction
 from spacegamebackend.utils.resource_requirement_component import MineralCost
@@ -25,4 +27,5 @@ class OrbitalSolarFarm(StructureTemplate):
                     value=300,
                 ),
             ],
+            capacity_components=[],
         )

@@ -6,7 +6,7 @@ from spacegamebackend.application.models.space.component_templates.resource_comp
     ResearchComponentTemplate,
 )
 from spacegamebackend.application.models.space.component_templates.structure_slot_component_template import (
-    Tier0SlotComponentTemplate,
+    StructureSlotaComponentTemplate,
 )
 from spacegamebackend.application.models.space.entitites.star import Star
 from spacegamebackend.domain.models.space.entity import Entity
@@ -18,7 +18,7 @@ class StarTemplate(EntityTemplate):
     def __init__(self) -> None:
         super().__init__(
             component_templates=[
-                Tier0SlotComponentTemplate(
+                StructureSlotaComponentTemplate(
                     min_slots=1,
                     max_slots=10,
                 ),

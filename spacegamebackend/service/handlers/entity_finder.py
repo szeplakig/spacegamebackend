@@ -1,5 +1,6 @@
 import random
 from functools import lru_cache
+from typing import TYPE_CHECKING
 
 from spacegamebackend.application.models.space.components.entities_component import (
     EntitiesComponent,
@@ -19,7 +20,9 @@ from spacegamebackend.application.models.space.entity_templates.void_template im
 )
 from spacegamebackend.application.models.space.seeder import CoordinateSeeder
 from spacegamebackend.domain.models.space.entity import Entity
-from spacegamebackend.domain.models.space.entity_template import EntityTemplate
+
+if TYPE_CHECKING:
+    from spacegamebackend.domain.models.space.entity_template import EntityTemplate
 
 MATERIAL_DENSITY_SCALE = 200
 VOID_DENSITY_THRESHOLD = 0.1

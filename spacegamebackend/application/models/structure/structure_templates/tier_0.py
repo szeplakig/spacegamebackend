@@ -5,6 +5,7 @@ from spacegamebackend.domain.models.structure.structure_template import (
 )
 from spacegamebackend.domain.models.structure.structure_type import StructureType
 from spacegamebackend.utils.research_requirement_component import ResearchRequirement
+from spacegamebackend.utils.resource_capacity_component import MineralsCapacity
 from spacegamebackend.utils.resource_production_component import (
     AlloysProduction,
     AuthorityProduction,
@@ -52,6 +53,7 @@ class MiningFacility(StructureTemplate):
                 ),
                 # Available from the start, so no research requirement
             ],
+            capacity_components=[],
         )
 
 
@@ -78,6 +80,7 @@ class SolarFarm(StructureTemplate):
                     value=100,
                 ),
             ],
+            capacity_components=[],
         )
 
 
@@ -107,6 +110,7 @@ class ResearchLab(StructureTemplate):
                     value=50,
                 ),
             ],
+            capacity_components=[],
         )
 
 
@@ -138,6 +142,7 @@ class AlloyFoundry(StructureTemplate):
                     value=50,
                 ),
             ],
+            capacity_components=[],
         )
 
 
@@ -158,6 +163,7 @@ class GovernmentCenter(StructureTemplate):
                 MineralCost(value=100),
                 EnergyCost(value=200),
             ],
+            capacity_components=[],
         )
 
 
@@ -175,6 +181,7 @@ class DeuteriumExtractor(StructureTemplate):
                 MineralCost(value=100),
                 EnergyCost(value=50),
             ],
+            capacity_components=[],
         )
 
 
@@ -207,6 +214,7 @@ class FusionReactor(StructureTemplate):
                     research_level_scaling=2,
                 ),
             ],
+            capacity_components=[],
         )
 
 
@@ -226,6 +234,7 @@ class Outpost(StructureTemplate):
             requirement_components=[
                 MineralCost(value=100),
             ],
+            capacity_components=[],
         )
 
 
@@ -246,21 +255,25 @@ class OrbitalGovernmentCenter(StructureTemplate):
                 MineralCost(value=100),
                 EnergyCost(value=200),
             ],
+            capacity_components=[],
         )
 
 
-# @StructureTemplate.register_structure_template
-# class MineralStorage(StructureTemplate):
-#     def __init__(self) -> None:
-#         super().__init__(
-#             structure_type=StructureType.MINERAL_STORAGE,
-#             title="Mineral Storage",
-#             description="A storage facility for minerals.",
-#             tier=0,
-#             entity_slot_categories={EntitySlotCategory.SURFACE},
-#             production_components=[],
-#             requirement_components=[
-#                 MineralCost(value=100),
-#                 EnergyCost(value=50),
-#             ],
-#         )
+@StructureTemplate.register_structure_template
+class MineralStorage(StructureTemplate):
+    def __init__(self) -> None:
+        super().__init__(
+            structure_type=StructureType.MINERAL_STORAGE,
+            title="Mineral Storage",
+            description="A storage facility for minerals.",
+            tier=0,
+            entity_slot_categories={EntitySlotCategory.SURFACE},
+            production_components=[],
+            requirement_components=[
+                MineralCost(value=100),
+                EnergyCost(value=50),
+            ],
+            capacity_components=[
+                MineralsCapacity(value=1000, level=1),
+            ],
+        )

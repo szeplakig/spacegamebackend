@@ -1,4 +1,3 @@
-from datetime import timedelta
 from functools import lru_cache
 
 from spacegamebackend.domain.models.research.research_type import ResearchType
@@ -60,11 +59,6 @@ class UserDataHub:
         return self.user_structure_repository.has_structure_at(
             user_id=self.user_id, x=x, y=y, structure_type=structure_type
         )
-
-    @lru_cache
-    def warp_time(self, warp_by: timedelta) -> None:
-        self.get_resources.cache_clear()
-        self.user_resources_repository.warp_time(user_id=self.user_id, warp_by=warp_by)
 
     def upgrade_structure(self, structure_id: str) -> None:
         self.get_structure.cache_clear()

@@ -9,8 +9,11 @@ TODO:
 - Exploration
 - Need to survey systems before you can build and know what resources are available
 - Combat ???
+- Create handcrafted starting system
+- 30k x 30k coord zone, with galaxy generation with arms?
 
 
-# Resources
-- Minerals
--
+
+
+Bugs:
+- After login/register, resurces are not updated

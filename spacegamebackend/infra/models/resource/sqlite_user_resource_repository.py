@@ -15,75 +15,87 @@ from spacegamebackend.infra.models.resource.resource_model import ResourceModel
 
 
 class SqliteUserResourcesRepository(UserResourcesRepository):
-    def __init__(self, db_url: str = "sqlite:///database.db") -> None:
-        self.engine = create_engine(db_url, echo=False)
-
-    def _map_db_to_resources(self, db_resource: ResourceModel) -> Resources:
-        mapped: dict[str, ResourceDescriptor] = {
-            rtype.value: ResourceDescriptor(
-                amount=getattr(db_resource, rtype.value),
-                change=getattr(db_resource, f"{rtype.value}_change"),
-                capacity=getattr(db_resource, f"{rtype.value}_capacity"),
-                updated_at=getattr(db_resource, f"{rtype.value}_updated_at"),
-            )
-            for rtype in ResourceType
-        }
-        return Resources(**mapped)
+    def __init__(self) -> None:
+        self.engine = create_engine("sqlite:///database.db")
 
     def get_user_resources(self, *, user_id: str) -> Resources:
+        """Get the resources of a user."""
         with Session(self.engine) as session:
-            db_resource = session.exec(select(ResourceModel).where(ResourceModel.user_id == user_id)).first()
-
-            if db_resource is None:
-                default_resources = Resources()
-                self.set_user_resources(user_id=user_id, resources=default_resources)
-                return default_resources
-
-            return self._map_db_to_resources(db_resource)
+            db_user_resource = session.exec(
+                select(ResourceModel).where(ResourceModel.user_id == user_id)
+            ).first()
+            if db_user_resource is None:
+                self.set_user_resources(user_id=user_id, resources=Resources())
+                return Resources()
+            return Resources(
+                energy=ResourceDescriptor(
+                    amount=db_user_resource.energy,
+                    change=db_user_resource.energy_change,
+                    capacity=db_user_resource.energy_capacity,
+                    updated_at=db_user_resource.energy_updated_at,
+                ),
+                minerals=ResourceDescriptor(
+                    amount=db_user_resource.minerals,
+                    change=db_user_resource.minerals_change,
+                    capacity=db_user_resource.minerals_capacity,
+                    updated_at=db_user_resource.minerals_updated_at,
+                ),
+                alloys=ResourceDescriptor(
+                    amount=db_user_resource.alloys,
+                    change=db_user_resource.alloys_change,
+                    capacity=db_user_resource.alloys_capacity,
+                    updated_at=db_user_resource.alloys_updated_at,
+                ),
+                antimatter=ResourceDescriptor(
+                    amount=db_user_resource.antimatter,
+                    change=db_user_resource.antimatter_change,
+                    capacity=db_user_resource.antimatter_capacity,
+                    updated_at=db_user_resource.antimatter_updated_at,
+                ),
+                research=ResourceDescriptor(
+                    amount=db_user_resource.research,
+                    change=db_user_resource.research_change,
+                    capacity=db_user_resource.research_capacity,
+                    updated_at=db_user_resource.research_updated_at,
+                ),
+                authority=ResourceDescriptor(
+                    amount=db_user_resource.authority,
+                    change=db_user_resource.authority_change,
+                    capacity=db_user_resource.authority_capacity,
+                    updated_at=db_user_resource.authority_updated_at,
+                ),
+            )
 
     def set_user_resources(self, *, user_id: str, resources: Resources) -> None:
         with Session(self.engine) as session:
-            db_resource = session.exec(select(ResourceModel).where(ResourceModel.user_id == user_id)).first()
-
-            if db_resource is None:
-                db_resource = ResourceModel(user_id=user_id)
-                session.add(db_resource)
-
-            now = datetime.now()
-
-            for rtype in ResourceType:
-                descriptor = getattr(resources, rtype.value)
-                setattr(db_resource, rtype.value, descriptor.amount)
-                setattr(db_resource, f"{rtype.value}_change", descriptor.change)
-                setattr(db_resource, f"{rtype.value}_capacity", descriptor.capacity)
-                setattr(db_resource, f"{rtype.value}_updated_at", now)
-
-            session.commit()
-
-    def warp_time(self, *, user_id: str, warp_by: datetime) -> None:
-        with Session(self.engine) as session:
-            db_resource = session.exec(select(ResourceModel).where(ResourceModel.user_id == user_id)).first()
-
-            if db_resource is None:
-                raise ValueError(f"User with ID {user_id} does not exist.")
-
-            for rtype in ResourceType:
-                descriptor = getattr(db_resource, rtype.value)
-                change = getattr(db_resource, f"{rtype.value}_change")
-                capacity = getattr(db_resource, f"{rtype.value}_capacity")
-                updated_at = getattr(db_resource, f"{rtype.value}_updated_at")
-
-                # Calculate the new amount based on the change and time warp
-                hours_passed = (warp_by - updated_at).total_seconds() / 3600
-                new_amount = round(
-                    min(
-                        descriptor.amount + change * hours_passed,
-                        capacity if capacity is not None else float("inf"),
-                    )
+            db_user_resource = session.exec(
+                select(ResourceModel).where(ResourceModel.user_id == user_id)
+            ).first()
+            if db_user_resource is None:
+                db_user_resource = ResourceModel(
+                    user_id=user_id,
                 )
-
-                # Update the resource
-                setattr(db_resource, rtype.value, new_amount)
-                setattr(db_resource, f"{rtype.value}_updated_at", warp_by)
-
+                session.add(db_user_resource)
+            for resource_type in ResourceType:
+                setattr(
+                    db_user_resource,
+                    resource_type.value,
+                    getattr(resources, resource_type.value).amount,
+                )
+                setattr(
+                    db_user_resource,
+                    f"{resource_type.value}_change",
+                    getattr(resources, resource_type.value).change,
+                )
+                setattr(
+                    db_user_resource,
+                    f"{resource_type.value}_capacity",
+                    getattr(resources, resource_type.value).capacity,
+                )
+                setattr(
+                    db_user_resource,
+                    f"{resource_type.value}_updated_at",
+                    datetime.now(),
+                )
+                session.add(db_user_resource)
             session.commit()
