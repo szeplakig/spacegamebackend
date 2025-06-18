@@ -12,7 +12,7 @@ from spacegamebackend.domain.models.structure.user_structure_repository import (
 )
 
 
-class UserResosourceUpdater:
+class UserResourceUpdater:
     def __init__(
         self,
         user_resources_repository: UserResourcesRepository,
@@ -33,7 +33,7 @@ class UserResosourceUpdater:
         # Calculate the resources
         updated_resources = self.calculate_resources(user_resources, structures, research)
         # Update the resources
-        self.user_resources_repository.set_user_resources(user_id=user_id, resources=user_resources)
+        self.user_resources_repository.set_user_resources(user_id=user_id, resources=updated_resources)
 
     def calculate_resources(
         self,

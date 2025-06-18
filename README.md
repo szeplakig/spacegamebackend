@@ -17,3 +17,5 @@ TODO:
 
 Bugs:
 - After login/register, resurces are not updated
+- Building things puts resources in the negative
+

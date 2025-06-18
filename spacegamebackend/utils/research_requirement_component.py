@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from math import floor
 
 from spacegamebackend.domain.models.research.research_type import ResearchType
 from spacegamebackend.utils.requirement_component import RequirementComponent
@@ -17,7 +18,7 @@ class ResearchRequirement(RequirementComponent):
         title: str,
         research_type: ResearchType,
         required_research_level: int,
-        research_level_scaling: int = 1,
+        research_level_scaling: float = 1,
         level: int = 1,
     ) -> None:
         super().__init__(title=title)
@@ -27,7 +28,7 @@ class ResearchRequirement(RequirementComponent):
         self.level = level
 
     def get_scaled_value(self) -> int:
-        return self.required_research_level + self.level * self.research_level_scaling
+        return self.required_research_level + floor((self.level - 1) * self.research_level_scaling)
 
     def to_dict(self) -> dict:
         return {

@@ -21,6 +21,7 @@ from spacegamebackend.domain.models.structure.structure_template import (
 from spacegamebackend.domain.models.structure.structure_type import StructureType
 from spacegamebackend.utils.int_to_roman import int_to_roman
 from spacegamebackend.utils.research_requirement_component import ResearchRequirement
+from spacegamebackend.utils.resource_requirement_component import ResourceRequirement
 from spacegamebackend.utils.structure_requirement_component import StructureRequirement
 
 
@@ -37,7 +38,11 @@ class ResearchNode(BaseModel, frozen=True):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ResearchNode):
             return NotImplemented
-        return self.node_type == other.node_type and self.type == other.type and self.level == other.level
+        return (
+            self.node_type == other.node_type
+            and self.type == other.type
+            and self.level == other.level
+        )
 
 
 class StructureNode(BaseModel, frozen=True):
@@ -53,7 +58,11 @@ class StructureNode(BaseModel, frozen=True):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, StructureNode):
             return NotImplemented
-        return self.node_type == other.node_type and self.type == other.type and self.level == other.level
+        return (
+            self.node_type == other.node_type
+            and self.type == other.type
+            and self.level == other.level
+        )
 
 
 Node = ResearchNode | StructureNode
@@ -68,6 +77,7 @@ def build_research_forest(
         Node,
         set[Node],
     ],
+    dict[Node, int],
 ]:
     """Builds a research tree from the given researches and structures.
     The tree will be a directed acyclic graph (DAG) where each node is a building or research
@@ -82,9 +92,6 @@ def build_research_forest(
             where the key is the structure type and the value is the max level built anywhere in their Empire.
     """
 
-    research_templates = ResearchTemplate.research_templates
-    structure_templates = StructureTemplate.structure_templates
-
     nodes: list[Node] = []
     edges: dict[
         Node,
@@ -94,75 +101,91 @@ def build_research_forest(
     find_requirements: list[Node] = []
 
     for research_type, level in {
-        research_type: research_levels.get(research_type, 0) for research_type in research_templates
+        research_type: research_levels.get(research_type, 0)
+        for research_type in ResearchTemplate.research_templates
     }.items():
-        _node = ResearchNode(
+        r_node = ResearchNode(
             type=research_type,
             level=level + 1,
             status="unlockable",
-            title=research_templates[research_type].title + " " + int_to_roman(level + 1),
+            title=ResearchTemplate.get_research_template(research_type).title
+            + " "
+            + int_to_roman(level + 1),
         )
-        if _node not in nodes:
-            nodes.append(_node)
-            find_requirements.append(_node)
+        if r_node not in nodes:
+            nodes.append(r_node)
+            find_requirements.append(r_node)
 
     for structure_type, level in {
-        structure_type: structures_levels.get(structure_type, 0) for structure_type in structure_templates
+        structure_type: structures_levels.get(structure_type, 0)
+        for structure_type in StructureTemplate.structure_templates
     }.items():
-        _node = StructureNode(
+        s_node = StructureNode(
             type=structure_type,
             level=level + 1,
             status="unlockable",
-            title=structure_templates[structure_type].title + " " + int_to_roman(level + 1),
+            title=StructureTemplate.get_structure_template(structure_type).title
+            + " "
+            + int_to_roman(level + 1),
         )
-        if _node not in nodes:
-            nodes.append(_node)
-            find_requirements.append(_node)
+        if s_node not in nodes:
+            nodes.append(s_node)
+            find_requirements.append(s_node)
 
     while find_requirements:
         explore_node = find_requirements.pop(0)
         if isinstance(explore_node, ResearchNode):
-            research_template = research_templates.get(explore_node.type)
-            if research_template is None:
-                raise ValueError(f"Research {explore_node.type} not found in research options.")
+            research_template = ResearchTemplate.get_research_template(
+                explore_node.type
+            )
             for component in research_template.scale(
                 level=explore_node.level
             ).requirement_components.components.values():
                 # TODO: refactor duplicate code
                 if isinstance(component, ResearchRequirement):
-                    new_node = ResearchNode(
+                    new_node = ResearchNode(  # type: ignore[assignment]
                         type=component.research_type,
                         level=component.get_scaled_value(),
                         status=(
                             "unlocked"
-                            if component.get_scaled_value() <= research_levels.get(component.research_type, 0)
+                            if component.get_scaled_value()
+                            <= research_levels.get(component.research_type, 0)
                             else "unlockable"
                         ),
                         title=(
-                            research_templates[component.research_type].title
+                            ResearchTemplate.get_research_template(
+                                component.research_type
+                            ).title
                             + " "
                             + int_to_roman(component.get_scaled_value())
                         ),
                     )
+                    if new_node.level < 1:
+                        continue
                     edges.setdefault(explore_node, set()).add(new_node)
                     if new_node not in nodes:
                         nodes.append(new_node)
                         find_requirements.append(new_node)
                 elif isinstance(component, StructureRequirement):
-                    new_node = StructureNode(
+                    new_node = StructureNode(  # type: ignore[assignment]
                         type=component.structure_type,
                         level=component.get_scaled_value(),
                         status=(
                             "unlocked"
-                            if component.get_scaled_value() <= structures_levels.get(component.structure_type, 0)
+                            if component.get_scaled_value()
+                            <= structures_levels.get(component.structure_type, 0)
                             else "unlockable"
                         ),
                         title=(
-                            structure_templates[component.structure_type].title
+                            StructureTemplate.get_structure_template(
+                                component.structure_type
+                            ).title
                             + " "
                             + int_to_roman(component.get_scaled_value())
                         ),
                     )
+                    if new_node.level < 1:
+                        continue
                     edges.setdefault(explore_node, set()).add(new_node)
                     if new_node not in nodes:
                         nodes.append(new_node)
@@ -175,7 +198,12 @@ def build_research_forest(
             new_node = ResearchNode(
                 type=research_template.research_type,
                 level=prev_level,
-                status="unlocked",
+                status=(
+                    "unlocked"
+                    if prev_level
+                    <= research_levels.get(research_template.research_type, 0)
+                    else "unlockable"
+                ),
                 title=(research_template.title + " " + int_to_roman(prev_level)),
             )
             edges.setdefault(explore_node, set()).add(new_node)
@@ -183,9 +211,9 @@ def build_research_forest(
                 nodes.append(new_node)
                 find_requirements.append(new_node)
         elif isinstance(explore_node, StructureNode):
-            structure_template = structure_templates.get(explore_node.type)
-            if structure_template is None:
-                raise ValueError(f"Structure {explore_node.type} not found in structure options.")
+            structure_template = StructureTemplate.get_structure_template(
+                explore_node.type
+            )
             for component in structure_template.scale(
                 level=explore_node.level
             ).requirement_components.components.values():
@@ -195,34 +223,44 @@ def build_research_forest(
                         level=component.get_scaled_value(),
                         status=(
                             "unlocked"
-                            if component.get_scaled_value() <= research_levels.get(component.research_type, 0)
+                            if component.get_scaled_value()
+                            <= research_levels.get(component.research_type, 0)
                             else "unlockable"
                         ),
                         title=(
-                            research_templates[component.research_type].title
+                            ResearchTemplate.get_research_template(
+                                component.research_type
+                            ).title
                             + " "
                             + int_to_roman(component.get_scaled_value())
                         ),
                     )
+                    if new_node.level < 1:
+                        continue
                     edges.setdefault(explore_node, set()).add(new_node)
                     if new_node not in nodes:
                         nodes.append(new_node)
                         find_requirements.append(new_node)
                 elif isinstance(component, StructureRequirement):
-                    new_node = StructureNode(
+                    new_node = StructureNode(  # type: ignore[assignment]
                         type=component.structure_type,
                         level=component.get_scaled_value(),
                         status=(
                             "unlocked"
-                            if component.get_scaled_value() <= structures_levels.get(component.structure_type, 0)
+                            if component.get_scaled_value()
+                            <= structures_levels.get(component.structure_type, 0)
                             else "unlockable"
                         ),
                         title=(
-                            structure_templates[component.structure_type].title
+                            StructureTemplate.get_structure_template(
+                                component.structure_type
+                            ).title
                             + " "
                             + int_to_roman(component.get_scaled_value())
                         ),
                     )
+                    if new_node.level < 1:
+                        continue
                     edges.setdefault(explore_node, set()).add(new_node)
                     if new_node not in nodes:
                         nodes.append(new_node)
@@ -232,10 +270,15 @@ def build_research_forest(
             prev_level = explore_node.level - 1
             if prev_level < 1:
                 continue
-            new_node = StructureNode(
+            new_node = StructureNode(  # type: ignore[assignment]
                 type=structure_template.structure_type,
                 level=prev_level,
-                status="unlocked",
+                status=(
+                    "unlocked"
+                    if prev_level
+                    <= structures_levels.get(structure_template.structure_type, 0)
+                    else "unlockable"
+                ),
                 title=(structure_template.title + " " + int_to_roman(prev_level)),
             )
             edges.setdefault(explore_node, set()).add(new_node)
@@ -245,4 +288,88 @@ def build_research_forest(
         else:
             raise TypeError(f"Unknown type in research forest: {explore_node}")
 
-    return nodes, edges
+    # go through all the nodes and calculate the longest path to each node with dfs into a new node_rank dict
+    # calculate how many hops it takes to get to each node from the root nodes (which are the nodes with no incoming edges)
+    node_rank: dict[Node, int] = {}
+    # edges are like what depends on each node, outgoing edges
+    reverse_edges: dict[Node, set[Node]] = {}
+    for node in nodes:
+        if node not in edges:
+            # If a node has no outgoing edges, it is a root node
+            reverse_edges.setdefault(node, set())
+            continue
+        for dep in edges[node]:
+            reverse_edges.setdefault(dep, set()).add(node)
+
+    def dfs(node: Node, rank: int) -> None:
+        if node in node_rank and node_rank[node] >= rank:
+            return
+        node_rank[node] = rank
+        for dep in reverse_edges.get(node, []):
+            dfs(dep, rank + 1)
+
+    for node in nodes:
+        if node not in node_rank:
+            dfs(node, 0)
+
+    return nodes, edges, node_rank
+
+
+def calculate_total_resource_requirements(
+    target_node: Node,
+    research_levels: dict[ResearchType, int],
+    structures_levels: dict[StructureType, int],
+) -> dict[str, int]:
+    nodes, edges, node_rank = build_research_forest(research_levels, structures_levels)
+    visited = set()
+    resource_totals: dict[str, int] = {}
+
+    def collect_requirements(node: Node) -> None:
+        if node in visited:
+            return
+        visited.add(node)
+        # Get the template for the node
+        template: ResearchTemplate | StructureTemplate
+        if isinstance(node, ResearchNode):
+            template = ResearchTemplate.get_research_template(node.type).scale(
+                level=node.level
+            )
+        else:
+            template = StructureTemplate.get_structure_template(node.type).scale(
+                level=node.level
+            )
+        # Sum resource requirements
+        # DEBUG: Print scaled requirements for this node
+        print(f"Node: {node.title} (level {node.level})")
+
+        for comp in template.requirement_components.components.values():
+            if isinstance(comp, ResourceRequirement):
+                print(f"  Requirement: {comp}")
+                resource_totals[comp.resource_type] = (
+                    resource_totals.get(comp.resource_type, 0) + comp.get_scaled_value()
+                )
+        # Recurse on dependencies
+        for dep in edges.get(node, []):
+            collect_requirements(dep)
+
+    collect_requirements(target_node)
+    return resource_totals
+
+
+def main() -> None:
+    target = StructureNode(
+        type=StructureType.ORBITAL_GOVERNMENT_CENTER,
+        level=10,
+        status="",
+        title="",
+    )
+
+    structures_levels = {StructureType.ORBITAL_GOVERNMENT_CENTER: 9}
+
+    totals = calculate_total_resource_requirements(target, {}, structures_levels)
+
+    print(totals)
+
+
+if __name__ == "__main__":
+    main()

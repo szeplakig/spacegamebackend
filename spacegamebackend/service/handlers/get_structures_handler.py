@@ -60,7 +60,7 @@ class GetStructuresHandler:
         return GetStructuresResponse(
             built_structures=[
                 {
-                    **StructureTemplate.structure_templates[structure.structure_type].to_dict(),
+                    **StructureTemplate.get_structure_template(structure.structure_type).to_dict(),
                     **structure.to_dict(),
                 }
                 for structure in built_structures
@@ -91,7 +91,7 @@ class GetStructuresHandler:
         )
         matching_templates = []
         other_templates = {}
-        for template in StructureTemplate.structure_templates.values():
+        for template in StructureTemplate.get_structure_templates():
             if not (
                 result := evaluator.evaluate_build(
                     structure_template=template,

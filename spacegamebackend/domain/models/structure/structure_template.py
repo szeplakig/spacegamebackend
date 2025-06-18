@@ -19,12 +19,17 @@ from spacegamebackend.utils.resource_capacity_component import (
 from spacegamebackend.utils.resource_production_component import (
     ResourceProductionComponent,
 )
+from spacegamebackend.utils.structure_requirement_component import (
+    StructureLocationSelector,
+    StructureRequirement,
+)
 
 
 class StructureTemplate:
-    structure_templates: ClassVar[dict[StructureType, "StructureTemplate"]] = {}
+    structure_templates: ClassVar[dict[StructureType, type["StructureTemplate"]]] = {}
+    structure_type: StructureType
 
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
         *,
         structure_type: StructureType,
@@ -57,14 +62,12 @@ class StructureTemplate:
             "tier": self.tier,
             "entity_slot_categories": list(self.entity_slot_categories),
             "production_components": [
-                component.to_dict(level=self.level) for component in self.production_components.components.values()
+                component.to_dict() for component in self.production_components.components.values()
             ],
             "requirement_components": [
                 component.to_dict() for component in self.requirement_components.components.values()
             ],
-            "capacity_components": [
-                component.to_dict(level=self.level) for component in self.capacity_components.components.values()
-            ],
+            "capacity_components": [component.to_dict() for component in self.capacity_components.components.values()],
             "level": self.level,
         }
 
@@ -100,6 +103,28 @@ class StructureTemplate:
 
     @classmethod
     def register_structure_template[ST: type](cls, structure_template_class: ST) -> ST:
-        structure_template = structure_template_class()
-        cls.structure_templates[structure_template.structure_type] = structure_template
+        cls.structure_templates[structure_template_class.structure_type] = structure_template_class  # type: ignore[attr-defined]
         return structure_template_class
+
+    @classmethod
+    def get_structure_template(cls, structure_type: StructureType) -> "StructureTemplate":
+        return cls.structure_templates[structure_type]()  # type: ignore[return-value,call-arg]
+
+    @classmethod
+    def get_structure_templates(cls) -> list["StructureTemplate"]:
+        return [template() for template in cls.structure_templates.values()]  # type: ignore[return-value,call-arg]
+
+    def to_structure_requirement(
+        self,
+        required_structure_level: int,
+        structure_level_scaling: float,
+        required_structure_location_selector: StructureLocationSelector = StructureLocationSelector.GLOBAL,
+    ) -> RequirementComponent:
+        return StructureRequirement(
+            title=self.title,
+            structure_type=self.structure_type,
+            structure_location_selector=required_structure_location_selector,
+            required_structure_level=required_structure_level,
+            structure_level_scaling=structure_level_scaling,
+            level=self.level,
+        )

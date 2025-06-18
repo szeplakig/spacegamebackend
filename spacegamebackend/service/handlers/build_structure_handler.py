@@ -15,14 +15,18 @@ from spacegamebackend.domain.models.resource.user_resource_repository import (
 from spacegamebackend.domain.models.space.entity import Entity
 from spacegamebackend.domain.models.structure.structure import Structure
 from spacegamebackend.domain.models.structure.structure_status import StructureStatus
-from spacegamebackend.domain.models.structure.structure_template import StructureTemplate
+from spacegamebackend.domain.models.structure.structure_template import (
+    StructureTemplate,
+)
 from spacegamebackend.domain.models.structure.structure_type import StructureType
 from spacegamebackend.domain.models.structure.user_structure_repository import (
     UserStructureRepository,
 )
 from spacegamebackend.domain.models.user_data_hub import UserDataHub
 from spacegamebackend.service.handlers.entity_finder import get_entity
-from spacegamebackend.utils.resource_production_component import ResourceProductionComponent
+from spacegamebackend.utils.resource_production_component import (
+    ResourceProductionComponent,
+)
 from spacegamebackend.utils.resource_requirement_component import ResourceRequirement
 
 
@@ -55,7 +59,7 @@ class BuildStructureHandler:
                 status_code=404,
                 detail="Entity not found",
             )
-        structure_template = StructureTemplate.structure_templates[request.structure_type]
+        structure_template = StructureTemplate.get_structure_template(request.structure_type)
         user_data_hub = UserDataHub(
             user_id=user_id,
             user_resources_repository=self.user_resources_repository,
@@ -122,7 +126,7 @@ class BuildStructureHandler:
             cur = current_resources.get_resource(res_req.resource_type)
             current_resources.set_resource(
                 res_req.resource_type,
-                cur.amount - res_req.value,
+                cur.amount - res_req.scale(level=1).get_scaled_value(),
                 cur.change,
             )
         for res_prod in structure_template.production_components.get_components_of_type(ResourceProductionComponent):
@@ -130,6 +134,6 @@ class BuildStructureHandler:
             current_resources.set_resource(
                 res_prod.resource_type,
                 cur.amount,
-                cur.change + res_prod.value,
+                cur.change + res_prod.scale(level=1).get_scaled_value(),
             )
         self.user_resources_repository.set_user_resources(user_id=user_id, resources=current_resources)

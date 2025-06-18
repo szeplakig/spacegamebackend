@@ -5,10 +5,12 @@ from spacegamebackend.utils.requirement_component import (
     RequirementComponent,
     RequirementComponentStore,
 )
+from spacegamebackend.utils.research_requirement_component import ResearchRequirement
 
 
 class ResearchTemplate:
-    research_templates: ClassVar[dict[ResearchType, "ResearchTemplate"]] = {}
+    research_templates: ClassVar[dict[ResearchType, type["ResearchTemplate"]]] = {}
+    research_type: ResearchType
 
     def __init__(
         self,
@@ -55,6 +57,20 @@ class ResearchTemplate:
 
     @classmethod
     def register_research_template[ST: type](cls, research_template_class: ST) -> ST:
-        research_template = research_template_class()
-        cls.research_templates[research_template.research_type] = research_template
+        cls.research_templates[research_template_class.research_type] = research_template_class  # type: ignore[attr-defined]
         return research_template_class
+
+    @classmethod
+    def get_research_template(cls, research_type: ResearchType) -> "ResearchTemplate":
+        return cls.research_templates[research_type]()  # type: ignore[return-value,call-arg]
+
+    def to_research_requirement(
+        self, required_research_level: int, research_level_scaling: float
+    ) -> RequirementComponent:
+        return ResearchRequirement(
+            title=self.title,
+            research_type=self.research_type,
+            required_research_level=required_research_level,
+            research_level_scaling=research_level_scaling,
+            level=self.level,
+        )

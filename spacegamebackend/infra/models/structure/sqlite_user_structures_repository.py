@@ -29,7 +29,7 @@ class SqliteUserStructureRepository(UserStructureRepository):
                 structure_type=StructureType(db_structure.structure_type),
                 level=db_structure.level,
                 structure_status=db_structure.structure_status,
-                structure_template=StructureTemplate.structure_templates[StructureType(db_structure.structure_type)],
+                structure_template=StructureTemplate.get_structure_template(StructureType(db_structure.structure_type)),
             )
             for db_structure in db_structures
         ]
@@ -53,7 +53,7 @@ class SqliteUserStructureRepository(UserStructureRepository):
                 structure_type=StructureType(db_structure.structure_type),
                 level=db_structure.level,
                 structure_status=db_structure.structure_status,
-                structure_template=StructureTemplate.structure_templates[StructureType(db_structure.structure_type)],
+                structure_template=StructureTemplate.get_structure_template(StructureType(db_structure.structure_type)),
             )
             for db_structure in db_structures
         ]
@@ -101,7 +101,7 @@ class SqliteUserStructureRepository(UserStructureRepository):
                 structure_type=StructureType(db_structure.structure_type),
                 level=db_structure.level,
                 structure_status=db_structure.structure_status,
-                structure_template=StructureTemplate.structure_templates[StructureType(db_structure.structure_type)],
+                structure_template=StructureTemplate.get_structure_template(StructureType(db_structure.structure_type)),
             )
         raise Exception("Structure not found")
 
@@ -162,7 +162,7 @@ class SqliteUserStructureRepository(UserStructureRepository):
         This method returns a dictionary where the keys are StructureType and the values are the maximum levels.
         If the user does not exist, raise an exception."""
         with Session(self.engine) as session:
-            query = select(StructuresModel.structure_type, func.max(StructuresModel.level)).where(
+            query = select(StructuresModel.structure_type, func.max(StructuresModel.level)).where(  # type: ignore[var-annotated]
                 StructuresModel.user_id == user_id
             )
             if entity_id is not None:

@@ -25,8 +25,8 @@ class ResourceRequirement(RequirementComponent):
         self.scaling_factor = scaling_factor
 
     def get_scaled_value(self) -> int:
-        scaled_value = self.value * (self.scaling_factor**self.level)
-        magnitude = 10 ** int(len(str(int(abs(scaled_value)))) - 1)
+        scaled_value = self.value + self.value * (self.scaling_factor ** (self.level - 1))
+        magnitude = 10 ** int(len(str(int(abs(scaled_value)))) - 2)
         nice_value = round(scaled_value / magnitude) * magnitude
         return int(nice_value)
 
@@ -55,9 +55,12 @@ class ResourceRequirement(RequirementComponent):
             self.resource_type,
         )
 
+    def __repr__(self) -> str:
+        return f"{self.title} ({self.resource_type.name}): {self.get_scaled_value()} at level {self.level}"
+
 
 class MineralCost(ResourceRequirement):
-    def __init__(self, *, value: int, scaling_factor: float = 1.25) -> None:
+    def __init__(self, *, value: int, scaling_factor: float = 1.3) -> None:
         super().__init__(
             title="Mineral Cost",
             resource_type=ResourceType.MINERALS,
@@ -67,7 +70,7 @@ class MineralCost(ResourceRequirement):
 
 
 class EnergyCost(ResourceRequirement):
-    def __init__(self, *, value: int, scaling_factor: float = 1.15) -> None:
+    def __init__(self, *, value: int, scaling_factor: float = 1.3) -> None:
         super().__init__(
             title="Energy Cost",
             resource_type=ResourceType.ENERGY,
@@ -77,7 +80,7 @@ class EnergyCost(ResourceRequirement):
 
 
 class AlloysCost(ResourceRequirement):
-    def __init__(self, *, value: int, scaling_factor: float = 1.15) -> None:
+    def __init__(self, *, value: int, scaling_factor: float = 1.3) -> None:
         super().__init__(
             title="Alloy Cost",
             resource_type=ResourceType.ALLOYS,
@@ -87,7 +90,7 @@ class AlloysCost(ResourceRequirement):
 
 
 class AntimatterCost(ResourceRequirement):
-    def __init__(self, *, value: int, scaling_factor: float = 1.15) -> None:
+    def __init__(self, *, value: int, scaling_factor: float = 1.3) -> None:
         super().__init__(
             title="Antimatter Cost",
             resource_type=ResourceType.ANTIMATTER,
@@ -97,10 +100,20 @@ class AntimatterCost(ResourceRequirement):
 
 
 class ResearchCost(ResourceRequirement):
-    def __init__(self, *, value: int, scaling_factor: float = 1.15) -> None:
+    def __init__(self, *, value: int, scaling_factor: float = 1.3) -> None:
         super().__init__(
             title="Research Cost",
             resource_type=ResourceType.RESEARCH,
+            value=value,
+            scaling_factor=scaling_factor,
+        )
+
+
+class AuthorityCost(ResourceRequirement):
+    def __init__(self, *, value: int, scaling_factor: float = 1.3) -> None:
+        super().__init__(
+            title="Authority Cost",
+            resource_type=ResourceType.AUTHORITY,
             value=value,
             scaling_factor=scaling_factor,
         )

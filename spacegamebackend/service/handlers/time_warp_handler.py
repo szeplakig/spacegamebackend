@@ -10,6 +10,4 @@ class TimeWarpHandler:
         self.user_resource_repository = user_resource_repository
 
     def handle(self, user_id: str, seconds: int) -> None:
-        self.user_resource_repository.warp_time(
-            user_id=user_id, warp_by=timedelta(seconds=seconds)
-        )
+        self.user_resource_repository.warp_time(user_id=user_id, warp_by=timedelta(seconds=seconds))

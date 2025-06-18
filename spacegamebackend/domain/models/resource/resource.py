@@ -16,13 +16,13 @@ class ResourceDescriptor(BaseModel):
     def current_amount(self, t: datetime | None = None) -> int:
         t = t or datetime.now()
         hours_passed = (t - self.updated_at).total_seconds() / 3600
-        change = round(
+        diff = round(
             min(
                 self.change * self.buffs * hours_passed,
-                self.capacity or float("inf"),
+                self.capacity if self.capacity is not None else float("inf"),
             )
         )
-        return self.amount + change
+        return self.amount + diff
 
 
 class Resources(BaseModel):

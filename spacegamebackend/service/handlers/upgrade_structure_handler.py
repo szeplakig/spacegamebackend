@@ -93,7 +93,7 @@ class UpgradeStructureHandler:
             current_resources.set_resource(
                 res_prod.resource_type,
                 cur.amount,
-                cur.change + res_prod.get_scaled_value(level),
+                cur.change + res_prod.scale(level=level).get_scaled_value(),
             )
         self.user_resources_repository.set_user_resources(user_id=user_id, resources=current_resources)
 

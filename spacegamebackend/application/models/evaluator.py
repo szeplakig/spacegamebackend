@@ -377,12 +377,15 @@ def evaluate_resource_production_component(
     user_resources = evaluator.user_data_hub.get_resources()
     user_resources.update_resources()
     level = 1 if not structure else structure.level + 1
-    if user_resources.get_resource(component.resource_type).change + component.get_scaled_value(level=level) >= 0:
+    if (
+        user_resources.get_resource(component.resource_type).change + component.scale(level=level).get_scaled_value()
+        >= 0
+    ):
         return EvalResult(True)
+    new_value = (
+        user_resources.get_resource(component.resource_type).change + component.scale(level=level).get_scaled_value()
+    )
     return EvalResult(
         False,
-        (
-            f"{component.resource_type} production would go below 0 for {component.resource_type} by "
-            f"{user_resources.get_resource(component.resource_type).change + component.get_scaled_value(level=level)}"
-        ),
+        (f"{component.resource_type} production would go below 0 for {component.resource_type} by " f"{new_value}"),
     )

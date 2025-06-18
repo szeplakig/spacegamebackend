@@ -11,7 +11,7 @@ class ProductionComponent(SortableComponent, ABC):
         self.level = level
 
     @abstractmethod
-    def to_dict(self, *, level: int = 1) -> dict:
+    def to_dict(self) -> dict:
         pass
 
     @abstractmethod

@@ -22,12 +22,7 @@ def create_research_router() -> APIRouter:
     def get_forest(
         access_token: AccessTokenV1 = Depends(validate_access_token),
         handler: GetResearchForestHandler = Depends(get__get_research_forest_handler_dependency),
-    ) -> ResearchForestResponse:
-        """
-        Get the research forest.
-        This endpoint returns the research forest, which is a tree structure of all available research types.
-        """
-        # Placeholder for actual implementation
+    ) -> ResearchForestResponse | None:
         return handler.handle(user_id=access_token.user_id)
 
     return router

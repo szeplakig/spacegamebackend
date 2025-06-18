@@ -45,24 +45,37 @@ class GetUserResourcesHandler:
         resources = self.user_resources_repository.get_user_resources(user_id=user_id)
         user_structures = self.user_structure_repository.get_all_user_structures(user_id=user_id)
 
-        new_resources = Resources()
+        new_resources = Resources(
+            energy=ResourceDescriptor(capacity=0),
+            minerals=ResourceDescriptor(capacity=0),
+            alloys=ResourceDescriptor(capacity=0),
+            antimatter=ResourceDescriptor(capacity=0),
+            research=ResourceDescriptor(capacity=0),
+            authority=ResourceDescriptor(capacity=0),
+        )
         resources.update_resources()
-        for resource_type in ResourceType:
-            new_resources.get_resource(resource_type).amount = resources.get_resource(resource_type).amount
-            new_resources.get_resource(resource_type).updated_at = resources.get_resource(resource_type).updated_at
         for structure in user_structures:
-            for component in structure.structure_template.production_components.get_components_of_type(
+            for r_component in structure.structure_template.production_components.get_components_of_type(
                 ResourceProductionComponent
             ):
-                new_resources.get_resource(component.resource_type).change += component.get_scaled_value(
-                    structure.level
-                )
-            for component in structure.structure_template.capacity_components.get_components_of_type(
+                new_resources.get_resource(r_component.resource_type).change += r_component.scale(
+                    level=structure.level
+                ).get_scaled_value()
+            for c_component in structure.structure_template.capacity_components.get_components_of_type(
                 ResourceCapacityComponent
             ):
-                resource = new_resources.get_resource(component.resource_type)
+                resource = new_resources.get_resource(c_component.resource_type)
                 if resource.capacity is None:
                     resource.capacity = 0
-                resource.capacity += component.get_scaled_value()
+                resource.capacity += c_component.scale(level=structure.level).get_scaled_value()
+        for resource_type in ResourceType:
+            resource = resources.get_resource(resource_type)
+            new_resources.get_resource(resource_type).amount = round(
+                min(
+                    resource.amount,
+                    (resource.capacity if resource.capacity is not None else float("inf")),
+                )
+            )
+            new_resources.get_resource(resource_type).updated_at = resources.get_resource(resource_type).updated_at
         self.user_resources_repository.set_user_resources(user_id=user_id, resources=new_resources)
         return UserResourcesResponse.model_validate(new_resources)

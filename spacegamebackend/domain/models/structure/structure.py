@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 
 class Structure:
-    def __init__(  # noqa: PLR0913
+    def __init__(
         self,
         *,
         structure_id: str,
@@ -39,7 +39,7 @@ class Structure:
             "structure_status": self.structure_status,
             "level": self.level,
             "production_components": [
-                component.to_dict(level=self.level)
+                component.scale(level=self.level + 1).to_dict()
                 for component in self.structure_template.production_components.get_components()
             ],
             "requirement_components": [

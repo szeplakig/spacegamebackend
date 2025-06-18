@@ -26,6 +26,8 @@ class EntityTemplate(ABC):
 
     def generate_components(self, *, seeder: Seeder, differ: Hashable | None) -> list[Component]:
         seeder.seed(differ=(differ, self.category, "generate_components"))
-        return [
-            ct.generate_component(seeder=seeder, differ=(i, differ)) for i, ct in enumerate(self.component_templates)
-        ]
+        components = []
+        for i, ct in enumerate(self.component_templates):
+            component = ct.generate_component(seeder=seeder, differ=(i, differ))
+            components.append(component)
+        return components

@@ -23,23 +23,24 @@ class ResourceCapacityComponent(SortableComponent, ABC):
         return self.Key(value=self.value, resource_type=self.resource_type)
 
     def get_scaled_value(self) -> int:
-        return self.value * self.level
+        scaled_value = self.value + self.value * (1.15 ** (self.level - 1))
+        magnitude = 10 ** int(len(str(int(abs(scaled_value)))) - 2)
+        nice_value = round(scaled_value / magnitude) * magnitude
+        return int(nice_value)
 
     def to_dict(self, *, level: int = 1) -> dict:
         return {
             "category": self.category,
             "title": self.title,
-            "value": self.value,
+            "value": self.get_scaled_value(),
             "level": level,
         }
 
     def scale(self, *, level: int) -> "ResourceCapacityComponent":
         return self.__class__(
-            title=self.title,
             value=self.value,
-            resource_type=self.resource_type,
             level=level,
-        )
+        )  # type: ignore[call-arg]
 
 
 ResourceCapacityComponentStore = ComponentStore[ResourceCapacityComponent]
@@ -49,7 +50,7 @@ class EnergyCapacity(ResourceCapacityComponent):
     def __init__(self, *, value: int, level: int = 1) -> None:
         super().__init__(
             title="Energy Capacity",
-            resource_type=ResourceType.MINERALS,
+            resource_type=ResourceType.ENERGY,
             value=value,
             level=level,
         )

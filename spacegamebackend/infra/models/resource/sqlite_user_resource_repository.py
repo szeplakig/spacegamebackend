@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from sqlalchemy import create_engine
 from sqlmodel import Session, select
@@ -21,9 +21,7 @@ class SqliteUserResourcesRepository(UserResourcesRepository):
     def get_user_resources(self, *, user_id: str) -> Resources:
         """Get the resources of a user."""
         with Session(self.engine) as session:
-            db_user_resource = session.exec(
-                select(ResourceModel).where(ResourceModel.user_id == user_id)
-            ).first()
+            db_user_resource = session.exec(select(ResourceModel).where(ResourceModel.user_id == user_id)).first()
             if db_user_resource is None:
                 self.set_user_resources(user_id=user_id, resources=Resources())
                 return Resources()
@@ -68,9 +66,7 @@ class SqliteUserResourcesRepository(UserResourcesRepository):
 
     def set_user_resources(self, *, user_id: str, resources: Resources) -> None:
         with Session(self.engine) as session:
-            db_user_resource = session.exec(
-                select(ResourceModel).where(ResourceModel.user_id == user_id)
-            ).first()
+            db_user_resource = session.exec(select(ResourceModel).where(ResourceModel.user_id == user_id)).first()
             if db_user_resource is None:
                 db_user_resource = ResourceModel(
                     user_id=user_id,
@@ -97,5 +93,18 @@ class SqliteUserResourcesRepository(UserResourcesRepository):
                     f"{resource_type.value}_updated_at",
                     datetime.now(),
                 )
-                session.add(db_user_resource)
+            session.add(db_user_resource)
             session.commit()
+
+    def warp_time(self, *, user_id: str, warp_by: timedelta) -> None:
+        resources = self.get_user_resources(user_id=user_id)
+        hours = warp_by.total_seconds() / 3600
+        for resource_type in ResourceType:
+            descriptor: ResourceDescriptor = getattr(resources, resource_type.value)
+            descriptor.amount = round(
+                min(
+                    descriptor.amount + hours * descriptor.change,
+                    (descriptor.capacity if descriptor.capacity is not None else float("inf")),
+                )
+            )
+        self.set_user_resources(user_id=user_id, resources=resources)
