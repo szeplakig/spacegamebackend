@@ -15,6 +15,10 @@ class UserStructureRepository(ABC):
         """Get the structures of a user. If the user does not exist, raise an exception."""
 
     @abstractmethod
+    def get_user_structures_at(self, *, user_id: str, x: int, y: int) -> list[Structure]:
+        """Get the structures of a user at a specific position. If the user does not exist, raise an exception."""
+
+    @abstractmethod
     def get_structure(self, *, structure_id: str) -> Structure:
         """Get a structure. If the structure does not exist, raise an exception."""
 

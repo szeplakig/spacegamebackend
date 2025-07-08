@@ -9,17 +9,13 @@ from spacegamebackend.service.routers.user_resources_router import (
 )
 from spacegamebackend.service.routers.user_router import create_user_router
 
-origins = [
-    "http://localhost:3000",
-]
-
 
 def create_main_router() -> FastAPI:
     app = FastAPI()
 
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=origins,
+        allow_origins=["*"],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],

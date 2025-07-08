@@ -40,7 +40,7 @@ class OutpostStructureSlotComponentTemplate(StructureSlotComponentTemplate):
             min_slots=1,
             max_slots=1,
             allowed_structure_types={
-                StructureType.OUTPOST,
+                StructureType.OUTPOST_T0,
             },
         )
 
@@ -51,7 +51,7 @@ class OrbitalGovernmentCenterStructureSlotComponentTemplate(StructureSlotCompone
             title="Orbital Government Center slot",
             min_slots=1,
             max_slots=1,
-            allowed_structure_types={StructureType.ORBITAL_GOVERNMENT_CENTER},
+            allowed_structure_types={StructureType.ORBITAL_GOVERNMENT_CENTER_T1},
         )
 
 
@@ -61,5 +61,5 @@ class StructureSlotaComponentTemplate(StructureSlotComponentTemplate):
             title="Structures",
             min_slots=min_slots,
             max_slots=max_slots,
-            allowed_structure_types=StructureType.non_unique(),
+            allowed_structure_types=StructureType.non_resource_generation_structures(),
         )

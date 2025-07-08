@@ -22,7 +22,7 @@ from spacegamebackend.utils.resource_requirement_component import (
 class OrbitalSolarFarm(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.ORBITAL_SOLAR_FARM,
+            structure_type=StructureType.ORBITAL_SOLAR_FARM_T1,
             title="Orbital Solar Farm",
             description="Generates energy from sunlight in orbit.",
             tier=1,
@@ -48,7 +48,7 @@ class OrbitalSolarFarm(StructureTemplate):
 class OrbitalGovernmentCenter(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.ORBITAL_GOVERNMENT_CENTER,
+            structure_type=StructureType.ORBITAL_GOVERNMENT_CENTER_T1,
             title="Orbital Government Center",
             description="A center of government for your empire in orbit.",
             tier=0,

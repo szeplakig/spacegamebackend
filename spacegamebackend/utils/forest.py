@@ -38,11 +38,7 @@ class ResearchNode(BaseModel, frozen=True):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, ResearchNode):
             return NotImplemented
-        return (
-            self.node_type == other.node_type
-            and self.type == other.type
-            and self.level == other.level
-        )
+        return self.node_type == other.node_type and self.type == other.type and self.level == other.level
 
 
 class StructureNode(BaseModel, frozen=True):
@@ -58,11 +54,7 @@ class StructureNode(BaseModel, frozen=True):
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, StructureNode):
             return NotImplemented
-        return (
-            self.node_type == other.node_type
-            and self.type == other.type
-            and self.level == other.level
-        )
+        return self.node_type == other.node_type and self.type == other.type and self.level == other.level
 
 
 Node = ResearchNode | StructureNode
@@ -101,16 +93,13 @@ def build_research_forest(
     find_requirements: list[Node] = []
 
     for research_type, level in {
-        research_type: research_levels.get(research_type, 0)
-        for research_type in ResearchTemplate.research_templates
+        research_type: research_levels.get(research_type, 0) for research_type in ResearchTemplate.research_templates
     }.items():
         r_node = ResearchNode(
             type=research_type,
             level=level + 1,
             status="unlockable",
-            title=ResearchTemplate.get_research_template(research_type).title
-            + " "
-            + int_to_roman(level + 1),
+            title=ResearchTemplate.get_research_template(research_type).title + " " + int_to_roman(level + 1),
         )
         if r_node not in nodes:
             nodes.append(r_node)
@@ -124,9 +113,7 @@ def build_research_forest(
             type=structure_type,
             level=level + 1,
             status="unlockable",
-            title=StructureTemplate.get_structure_template(structure_type).title
-            + " "
-            + int_to_roman(level + 1),
+            title=StructureTemplate.get_structure_template(structure_type).title + " " + int_to_roman(level + 1),
         )
         if s_node not in nodes:
             nodes.append(s_node)
@@ -135,9 +122,7 @@ def build_research_forest(
     while find_requirements:
         explore_node = find_requirements.pop(0)
         if isinstance(explore_node, ResearchNode):
-            research_template = ResearchTemplate.get_research_template(
-                explore_node.type
-            )
+            research_template = ResearchTemplate.get_research_template(explore_node.type)
             for component in research_template.scale(
                 level=explore_node.level
             ).requirement_components.components.values():
@@ -148,14 +133,11 @@ def build_research_forest(
                         level=component.get_scaled_value(),
                         status=(
                             "unlocked"
-                            if component.get_scaled_value()
-                            <= research_levels.get(component.research_type, 0)
+                            if component.get_scaled_value() <= research_levels.get(component.research_type, 0)
                             else "unlockable"
                         ),
                         title=(
-                            ResearchTemplate.get_research_template(
-                                component.research_type
-                            ).title
+                            ResearchTemplate.get_research_template(component.research_type).title
                             + " "
                             + int_to_roman(component.get_scaled_value())
                         ),
@@ -172,14 +154,11 @@ def build_research_forest(
                         level=component.get_scaled_value(),
                         status=(
                             "unlocked"
-                            if component.get_scaled_value()
-                            <= structures_levels.get(component.structure_type, 0)
+                            if component.get_scaled_value() <= structures_levels.get(component.structure_type, 0)
                             else "unlockable"
                         ),
                         title=(
-                            StructureTemplate.get_structure_template(
-                                component.structure_type
-                            ).title
+                            StructureTemplate.get_structure_template(component.structure_type).title
                             + " "
                             + int_to_roman(component.get_scaled_value())
                         ),
@@ -200,20 +179,17 @@ def build_research_forest(
                 level=prev_level,
                 status=(
                     "unlocked"
-                    if prev_level
-                    <= research_levels.get(research_template.research_type, 0)
+                    if prev_level <= research_levels.get(research_template.research_type, 0)
                     else "unlockable"
                 ),
                 title=(research_template.title + " " + int_to_roman(prev_level)),
             )
-            edges.setdefault(explore_node, set()).add(new_node)
+            # edges.setdefault(explore_node, set()).add(new_node)
             if new_node not in nodes:
                 nodes.append(new_node)
                 find_requirements.append(new_node)
         elif isinstance(explore_node, StructureNode):
-            structure_template = StructureTemplate.get_structure_template(
-                explore_node.type
-            )
+            structure_template = StructureTemplate.get_structure_template(explore_node.type)
             for component in structure_template.scale(
                 level=explore_node.level
             ).requirement_components.components.values():
@@ -223,14 +199,11 @@ def build_research_forest(
                         level=component.get_scaled_value(),
                         status=(
                             "unlocked"
-                            if component.get_scaled_value()
-                            <= research_levels.get(component.research_type, 0)
+                            if component.get_scaled_value() <= research_levels.get(component.research_type, 0)
                             else "unlockable"
                         ),
                         title=(
-                            ResearchTemplate.get_research_template(
-                                component.research_type
-                            ).title
+                            ResearchTemplate.get_research_template(component.research_type).title
                             + " "
                             + int_to_roman(component.get_scaled_value())
                         ),
@@ -247,14 +220,11 @@ def build_research_forest(
                         level=component.get_scaled_value(),
                         status=(
                             "unlocked"
-                            if component.get_scaled_value()
-                            <= structures_levels.get(component.structure_type, 0)
+                            if component.get_scaled_value() <= structures_levels.get(component.structure_type, 0)
                             else "unlockable"
                         ),
                         title=(
-                            StructureTemplate.get_structure_template(
-                                component.structure_type
-                            ).title
+                            StructureTemplate.get_structure_template(component.structure_type).title
                             + " "
                             + int_to_roman(component.get_scaled_value())
                         ),
@@ -275,13 +245,12 @@ def build_research_forest(
                 level=prev_level,
                 status=(
                     "unlocked"
-                    if prev_level
-                    <= structures_levels.get(structure_template.structure_type, 0)
+                    if prev_level <= structures_levels.get(structure_template.structure_type, 0)
                     else "unlockable"
                 ),
                 title=(structure_template.title + " " + int_to_roman(prev_level)),
             )
-            edges.setdefault(explore_node, set()).add(new_node)
+            # edges.setdefault(explore_node, set()).add(new_node)
             if new_node not in nodes:
                 nodes.append(new_node)
                 find_requirements.append(new_node)
@@ -289,7 +258,8 @@ def build_research_forest(
             raise TypeError(f"Unknown type in research forest: {explore_node}")
 
     # go through all the nodes and calculate the longest path to each node with dfs into a new node_rank dict
-    # calculate how many hops it takes to get to each node from the root nodes (which are the nodes with no incoming edges)
+    # calculate how many hops it takes to get to each node from the root nodes (
+    # which are the nodes with no incoming edges)
     node_rank: dict[Node, int] = {}
     # edges are like what depends on each node, outgoing edges
     reverse_edges: dict[Node, set[Node]] = {}
@@ -331,13 +301,9 @@ def calculate_total_resource_requirements(
         # Get the template for the node
         template: ResearchTemplate | StructureTemplate
         if isinstance(node, ResearchNode):
-            template = ResearchTemplate.get_research_template(node.type).scale(
-                level=node.level
-            )
+            template = ResearchTemplate.get_research_template(node.type).scale(level=node.level)
         else:
-            template = StructureTemplate.get_structure_template(node.type).scale(
-                level=node.level
-            )
+            template = StructureTemplate.get_structure_template(node.type).scale(level=node.level)
         # Sum resource requirements
         # DEBUG: Print scaled requirements for this node
         print(f"Node: {node.title} (level {node.level})")
@@ -358,13 +324,13 @@ def calculate_total_resource_requirements(
 
 def main() -> None:
     target = StructureNode(
-        type=StructureType.ORBITAL_GOVERNMENT_CENTER,
+        type=StructureType.ORBITAL_GOVERNMENT_CENTER_T1,
         level=10,
         status="",
         title="",
     )
 
-    structures_levels = {StructureType.ORBITAL_GOVERNMENT_CENTER: 9}
+    structures_levels = {StructureType.ORBITAL_GOVERNMENT_CENTER_T1: 9}
 
     totals = calculate_total_resource_requirements(target, {}, structures_levels)
 

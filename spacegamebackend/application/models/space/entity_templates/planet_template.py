@@ -32,6 +32,7 @@ class PlanetTemplateBase(EntityTemplate):
                 ),
                 EnergyComponentTemplate(min_value=2, max_value=10),
                 MineralsComponentTemplate(min_value=5, max_value=20),
+                ResearchComponentTemplate(min_value=0, max_value=5),
                 EntitiesComponentTemplate(
                     title="Moons",
                     weighted_entity_templates=[WeightedEntityTemplate(weight=1, entity_template=MoonTemplate())],

@@ -43,7 +43,7 @@ from spacegamebackend.utils.structure_requirement_component import (
 class MiningFacility(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.MINING_FACILITY,
+            structure_type=StructureType.MINING_FACILITY_T0,
             title="Mining Facility",
             description="Extracts minerals from the planet's crust using basic mining techniques.",
             tier=0,
@@ -76,7 +76,7 @@ class MiningFacility(StructureTemplate):
 class SolarFarm(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.SOLAR_FARM,
+            structure_type=StructureType.SOLAR_FARM_T0,
             title="Solar Farm",
             description="Generates energy from sunlight.",
             tier=0,
@@ -104,7 +104,7 @@ class SolarFarm(StructureTemplate):
 class ResearchLab(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.RESEARCH_LAB,
+            structure_type=StructureType.RESEARCH_LAB_T0,
             title="Research Lab",
             description="A research lab to research new technologies.",
             tier=0,
@@ -138,7 +138,7 @@ class ResearchLab(StructureTemplate):
 class AlloyFoundry(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.ALLOY_FOUNDRY,
+            structure_type=StructureType.ALLOY_FOUNDRY_T0,
             title="Alloy Foundry",
             description="Produces alloys from minerals.",
             tier=0,
@@ -176,7 +176,7 @@ class AlloyFoundry(StructureTemplate):
 class GovernmentCenter(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.GOVERNMENT_CENTER,
+            structure_type=StructureType.GOVERNMENT_CENTER_T0,
             title="Government Center",
             description="A center of government for your empire.",
             tier=0,
@@ -201,7 +201,7 @@ class GovernmentCenter(StructureTemplate):
 class DeuteriumExtractor(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.DEUTERIUM_EXTRACTOR,
+            structure_type=StructureType.DEUTERIUM_EXTRACTOR_T1,
             title="Deuterium Extractor",
             description="Extracts deuterium from water to fuel fusion.",
             tier=0,
@@ -221,7 +221,7 @@ class DeuteriumExtractor(StructureTemplate):
 class FusionReactor(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.FUSION_REACTOR,
+            structure_type=StructureType.FUSION_REACTOR_T1,
             title="Fusion Reactor",
             description="A fusion reactor to generate energy.",
             tier=0,
@@ -234,7 +234,7 @@ class FusionReactor(StructureTemplate):
                 EnergyCost(value=100),
                 StructureRequirement(
                     title="Deuterium Extractor",
-                    structure_type=StructureType.DEUTERIUM_EXTRACTOR,
+                    structure_type=StructureType.DEUTERIUM_EXTRACTOR_T1,
                     required_structure_level=1,
                     structure_location_selector=StructureLocationSelector.LOCAL,
                     structure_level_scaling=1,
@@ -254,7 +254,7 @@ class FusionReactor(StructureTemplate):
 class Outpost(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.OUTPOST,
+            structure_type=StructureType.OUTPOST_T0,
             title="Outpost",
             description="A small outpost to claim a location in space.",
             tier=0,
@@ -275,7 +275,7 @@ class Outpost(StructureTemplate):
 class MineralStorage(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.MINERAL_STORAGE,
+            structure_type=StructureType.MINERAL_STORAGE_T0,
             title="Mineral Storage",
             description="A storage facility for minerals.",
             tier=0,
@@ -295,7 +295,7 @@ class MineralStorage(StructureTemplate):
 class EnergyStorage(StructureTemplate):
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.ENERGY_STORAGE,
+            structure_type=StructureType.ENERGY_STORAGE_T0,
             title="Energy Storage",
             description="A storage facility for energy.",
             tier=0,

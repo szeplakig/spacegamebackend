@@ -58,9 +58,7 @@ class RegisterUserHandler:
         self.user_structure_repository = user_structure_repository
 
     def handle(self, user_request: RegisterUserRequest) -> RegisterUserResponse:
-        user = self.user_repository.register_user(
-            email=user_request.email, password=user_request.password
-        )
+        user = self.user_repository.register_user(email=user_request.email, password=user_request.password)
         seeder = CoordinateSeeder(x=0, y=0)
         starter_solar_system = generate_starter_system(seeder)
         starter_planet = generate_starter_planet(seeder)
@@ -74,20 +72,18 @@ class RegisterUserHandler:
             structure=Structure(
                 structure_id=uuid4().hex,
                 entity_id=starter_solar_system.entity_id,
-                structure_type=StructureType.OUTPOST,
+                structure_type=StructureType.OUTPOST_T0,
                 level=1,
                 structure_status=StructureStatus.P100,
-                structure_template=StructureTemplate.get_structure_template(
-                    StructureType.OUTPOST
-                ),
+                structure_template=StructureTemplate.get_structure_template(StructureType.OUTPOST_T0),
             ),
         )
         buildings_to_add = [
-            StructureType.GOVERNMENT_CENTER,
-            StructureType.MINING_FACILITY,
-            StructureType.SOLAR_FARM,
-            StructureType.MINERAL_STORAGE,
-            StructureType.ENERGY_STORAGE,
+            StructureType.GOVERNMENT_CENTER_T0,
+            StructureType.MINING_FACILITY_T0,
+            StructureType.SOLAR_FARM_T0,
+            StructureType.MINERAL_STORAGE_T0,
+            StructureType.ENERGY_STORAGE_T0,
         ]
         for structure_type in buildings_to_add:
             self.user_structure_repository.add_user_structure(
@@ -101,9 +97,7 @@ class RegisterUserHandler:
                     structure_type=structure_type,
                     level=1,
                     structure_status=StructureStatus.P100,
-                    structure_template=StructureTemplate.get_structure_template(
-                        structure_type
-                    ),
+                    structure_template=StructureTemplate.get_structure_template(structure_type),
                 ),
             )
         self.user_resource_repository.set_user_resources(

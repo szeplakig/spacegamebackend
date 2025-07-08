@@ -31,7 +31,7 @@ class BasicResearchMethods(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=1,
                     structure_level_scaling=1,
@@ -57,7 +57,7 @@ class SolarPower(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=1,
                     structure_level_scaling=1,
@@ -83,7 +83,7 @@ class FusionPower(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=1,
                     structure_level_scaling=1,
@@ -109,7 +109,7 @@ class GeothermalPower(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=1,
                     structure_level_scaling=2,
@@ -158,7 +158,7 @@ class AdvancedMiningTechniques(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=3,
                     structure_level_scaling=2,
@@ -188,7 +188,7 @@ class MolecularRefinement(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=1,
                     structure_level_scaling=2,
@@ -218,7 +218,7 @@ class IonDrives(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=1,
                     structure_level_scaling=2,
@@ -244,7 +244,7 @@ class BureaucraticOptimization(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=1,
                     structure_level_scaling=2,

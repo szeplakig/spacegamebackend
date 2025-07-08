@@ -14,6 +14,7 @@ from spacegamebackend.utils.resource_capacity_component import (
     AuthorityCapacity,
     EnergyCapacity,
     MineralsCapacity,
+    ResearchCapacity,
 )
 from spacegamebackend.utils.resource_production_component import (
     AlloysProduction,
@@ -44,9 +45,7 @@ def get_research_requirement(
     required_research_level: int,
     research_level_scaling: float,
 ) -> RequirementComponent:
-    return ResearchTemplate.get_research_template(
-        research_type
-    ).to_research_requirement(
+    return ResearchTemplate.get_research_template(research_type).to_research_requirement(
         required_research_level=required_research_level,
         research_level_scaling=research_level_scaling,
     )
@@ -58,9 +57,7 @@ def get_structure_requirement(
     structure_level_scaling: float,
     required_structure_location_selector: StructureLocationSelector = StructureLocationSelector.GLOBAL,
 ) -> RequirementComponent:
-    return StructureTemplate.get_structure_template(
-        structure_type
-    ).to_structure_requirement(
+    return StructureTemplate.get_structure_template(structure_type).to_structure_requirement(
         required_structure_level=required_structure_level,
         structure_level_scaling=structure_level_scaling,
         required_structure_location_selector=required_structure_location_selector,
@@ -86,7 +83,7 @@ class BasicResearchMethods(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=1,
                     structure_level_scaling=1,
@@ -114,7 +111,7 @@ class SolarPower(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=1,
                     structure_level_scaling=1,
@@ -142,7 +139,7 @@ class GeothermalPower(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=1,
                     structure_level_scaling=2,
@@ -169,7 +166,7 @@ class StorageLogistics(ResearchTemplate):
                     value=50,
                 ),
                 get_structure_requirement(
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     required_structure_level=1,
                     structure_level_scaling=2,
                 ),
@@ -195,7 +192,7 @@ class AdvancedMiningTechniques(ResearchTemplate):
                     value=50,
                 ),
                 get_structure_requirement(
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     required_structure_level=3,
                     structure_level_scaling=2,
                 ),
@@ -221,7 +218,7 @@ class MolecularRefinement(ResearchTemplate):
                     value=50,
                 ),
                 get_structure_requirement(
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     required_structure_level=1,
                     structure_level_scaling=2,
                 ),
@@ -252,7 +249,7 @@ class BureaucraticOptimization(ResearchTemplate):
                     value=50,
                 ),
                 get_structure_requirement(
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     required_structure_level=1,
                     structure_level_scaling=2,
                 ),
@@ -283,7 +280,7 @@ class FusionPower(ResearchTemplate):
                     value=50,
                 ),
                 get_structure_requirement(
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     required_structure_level=1,
                     structure_level_scaling=2,
                 ),
@@ -309,7 +306,7 @@ class OrbitConstruction(ResearchTemplate):
                     value=200,
                 ),
                 get_structure_requirement(
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     required_structure_level=10,
                     structure_level_scaling=2,
                 ),
@@ -319,11 +316,11 @@ class OrbitConstruction(ResearchTemplate):
 
 @StructureTemplate.register_structure_template
 class MiningFacility(StructureTemplate):
-    structure_type = StructureType.MINING_FACILITY
+    structure_type = StructureType.MINING_FACILITY_T0
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.MINING_FACILITY,
+            structure_type=StructureType.MINING_FACILITY_T0,
             title="Mining Facility",
             description="Extracts minerals from the planet's crust using basic mining techniques.",
             tier=0,
@@ -354,11 +351,11 @@ class MiningFacility(StructureTemplate):
 
 @StructureTemplate.register_structure_template
 class SolarFarm(StructureTemplate):
-    structure_type = StructureType.SOLAR_FARM
+    structure_type = StructureType.SOLAR_FARM_T0
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.SOLAR_FARM,
+            structure_type=StructureType.SOLAR_FARM_T0,
             title="Solar Farm",
             description="Generates energy from sunlight.",
             tier=0,
@@ -384,11 +381,11 @@ class SolarFarm(StructureTemplate):
 
 @StructureTemplate.register_structure_template
 class ResearchLab(StructureTemplate):
-    structure_type = StructureType.RESEARCH_LAB
+    structure_type = StructureType.RESEARCH_LAB_T0
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.RESEARCH_LAB,
+            structure_type=StructureType.RESEARCH_LAB_T0,
             title="Research Lab",
             description="A research lab to research new technologies.",
             tier=0,
@@ -415,17 +412,19 @@ class ResearchLab(StructureTemplate):
                     research_level_scaling=0.5,
                 ),
             ],
-            capacity_components=[],
+            capacity_components=[
+                ResearchCapacity(value=100),
+            ],
         )
 
 
 @StructureTemplate.register_structure_template
 class AlloyFoundry(StructureTemplate):
-    structure_type = StructureType.ALLOY_FOUNDRY
+    structure_type = StructureType.ALLOY_FOUNDRY_T0
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.ALLOY_FOUNDRY,
+            structure_type=StructureType.ALLOY_FOUNDRY_T0,
             title="Alloy Foundry",
             description="Produces alloys from minerals.",
             tier=0,
@@ -462,11 +461,11 @@ class AlloyFoundry(StructureTemplate):
 
 @StructureTemplate.register_structure_template
 class GovernmentCenter(StructureTemplate):
-    structure_type = StructureType.GOVERNMENT_CENTER
+    structure_type = StructureType.GOVERNMENT_CENTER_T0
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.GOVERNMENT_CENTER,
+            structure_type=StructureType.GOVERNMENT_CENTER_T0,
             title="Government Center",
             description="A center of government for your empire.",
             tier=0,
@@ -490,11 +489,11 @@ class GovernmentCenter(StructureTemplate):
 
 @StructureTemplate.register_structure_template
 class DeuteriumExtractor(StructureTemplate):
-    structure_type = StructureType.DEUTERIUM_EXTRACTOR
+    structure_type = StructureType.DEUTERIUM_EXTRACTOR_T1
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.DEUTERIUM_EXTRACTOR,
+            structure_type=StructureType.DEUTERIUM_EXTRACTOR_T1,
             title="Deuterium Extractor",
             description="Extracts deuterium from water to fuel fusion.",
             tier=0,
@@ -512,11 +511,11 @@ class DeuteriumExtractor(StructureTemplate):
 
 @StructureTemplate.register_structure_template
 class FusionReactor(StructureTemplate):
-    structure_type = StructureType.FUSION_REACTOR
+    structure_type = StructureType.FUSION_REACTOR_T1
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.FUSION_REACTOR,
+            structure_type=StructureType.FUSION_REACTOR_T1,
             title="Fusion Reactor",
             description="A fusion reactor to generate energy.",
             tier=0,
@@ -528,7 +527,7 @@ class FusionReactor(StructureTemplate):
                 MineralCost(value=100),
                 EnergyCost(value=100),
                 get_structure_requirement(
-                    structure_type=StructureType.DEUTERIUM_EXTRACTOR,
+                    structure_type=StructureType.DEUTERIUM_EXTRACTOR_T1,
                     required_structure_level=1,
                     structure_level_scaling=1,
                 ),
@@ -544,11 +543,11 @@ class FusionReactor(StructureTemplate):
 
 @StructureTemplate.register_structure_template
 class Outpost(StructureTemplate):
-    structure_type = StructureType.OUTPOST
+    structure_type = StructureType.OUTPOST_T0
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.OUTPOST,
+            structure_type=StructureType.OUTPOST_T0,
             title="Outpost",
             description="A small outpost to claim a location in space.",
             tier=0,
@@ -571,14 +570,14 @@ class Outpost(StructureTemplate):
 
 
 @StructureTemplate.register_structure_template
-class MineralStorage(StructureTemplate):
-    structure_type = StructureType.MINERAL_STORAGE
+class OreSilo(StructureTemplate):
+    structure_type = StructureType.MINERAL_STORAGE_T0
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.MINERAL_STORAGE,
-            title="Mineral Storage",
-            description="A storage facility for minerals.",
+            structure_type=StructureType.MINERAL_STORAGE_T0,
+            title="Ore Silo",
+            description="A reinforced silo for storing raw minerals and ores extracted from the planet.",
             tier=0,
             entity_slot_categories={EntitySlotCategory.SURFACE},
             production_components=[],
@@ -598,14 +597,14 @@ class MineralStorage(StructureTemplate):
 
 
 @StructureTemplate.register_structure_template
-class EnergyStorage(StructureTemplate):
-    structure_type = StructureType.ENERGY_STORAGE
+class CapacitorArray(StructureTemplate):
+    structure_type = StructureType.ENERGY_STORAGE_T0
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.ENERGY_STORAGE,
-            title="Energy Storage",
-            description="A storage facility for energy.",
+            structure_type=StructureType.ENERGY_STORAGE_T0,
+            title="Capacitor Array",
+            description="A network of high-capacity capacitors for storing surplus energy.",
             tier=0,
             entity_slot_categories={EntitySlotCategory.SURFACE},
             production_components=[],
@@ -624,13 +623,77 @@ class EnergyStorage(StructureTemplate):
         )
 
 
+# tier 1 research storage with a creative name CREATIVE CREATIVE NAME
 @StructureTemplate.register_structure_template
-class OrbitalSolarFarm(StructureTemplate):
-    structure_type = StructureType.ORBITAL_SOLAR_FARM
+class PlanetaryLibrary(StructureTemplate):
+    structure_type = StructureType.RESEARCH_STORAGE_T0
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.ORBITAL_SOLAR_FARM,
+            structure_type=StructureType.RESEARCH_STORAGE_T0,
+            title="Planetary Library",
+            description="A vast repository of knowledge and research.",
+            tier=1,
+            entity_slot_categories={EntitySlotCategory.SURFACE},
+            production_components=[
+                EnergyUpkeep(
+                    value=20,
+                ),
+            ],
+            requirement_components=[
+                MineralCost(value=500),
+                EnergyCost(value=300),
+                get_research_requirement(
+                    research_type=ResearchType.BASIC_RESEARCH_METHODS,
+                    required_research_level=0,
+                    research_level_scaling=1,
+                ),
+            ],
+            capacity_components=[
+                ResearchCapacity(value=1000),
+            ],
+        )
+
+
+@StructureTemplate.register_structure_template
+class AlloyStorage(StructureTemplate):
+    structure_type = StructureType.ALLOY_STORAGE_T0
+
+    def __init__(self) -> None:
+        super().__init__(
+            structure_type=StructureType.ALLOY_STORAGE_T0,
+            title="Alloy Storage",
+            description="A reinforced storage facility for alloys.",
+            tier=0,
+            entity_slot_categories={EntitySlotCategory.SURFACE},
+            production_components=[],
+            requirement_components=[
+                MineralCost(value=100),
+                EnergyCost(value=50),
+                get_research_requirement(
+                    research_type=ResearchType.STORAGE_LOGISTICS,
+                    required_research_level=0,
+                    research_level_scaling=1,
+                ),
+                get_structure_requirement(
+                    structure_type=StructureType.ALLOY_FOUNDRY_T0,
+                    required_structure_level=1,
+                    structure_level_scaling=1,
+                ),
+            ],
+            capacity_components=[
+                AlloysCapacity(value=1000),
+            ],
+        )
+
+
+@StructureTemplate.register_structure_template
+class OrbitalSolarFarm(StructureTemplate):
+    structure_type = StructureType.ORBITAL_SOLAR_FARM_T1
+
+    def __init__(self) -> None:
+        super().__init__(
+            structure_type=StructureType.ORBITAL_SOLAR_FARM_T1,
             title="Orbital Solar Farm",
             description="Generates energy from sunlight in orbit.",
             tier=1,
@@ -664,11 +727,11 @@ class OrbitalSolarFarm(StructureTemplate):
 
 @StructureTemplate.register_structure_template
 class OrbitalGovernmentCenter(StructureTemplate):
-    structure_type = StructureType.ORBITAL_GOVERNMENT_CENTER
+    structure_type = StructureType.ORBITAL_GOVERNMENT_CENTER_T1
 
     def __init__(self) -> None:
         super().__init__(
-            structure_type=StructureType.ORBITAL_GOVERNMENT_CENTER,
+            structure_type=StructureType.ORBITAL_GOVERNMENT_CENTER_T1,
             title="Orbital Government Center",
             description="A center of government for your empire in orbit.",
             tier=0,

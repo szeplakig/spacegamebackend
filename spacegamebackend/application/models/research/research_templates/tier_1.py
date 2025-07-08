@@ -28,7 +28,7 @@ class FusionPower(ResearchTemplate):
                 ),
                 StructureRequirement(
                     title="Research Lab",
-                    structure_type=StructureType.RESEARCH_LAB,
+                    structure_type=StructureType.RESEARCH_LAB_T0,
                     structure_location_selector=StructureLocationSelector.GLOBAL,
                     required_structure_level=1,
                     structure_level_scaling=2,

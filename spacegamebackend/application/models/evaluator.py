@@ -73,10 +73,12 @@ class StructureBuildRequirementEvaluator:
                 structure_template.requirement_components.get_components(
                     exclude=({ResourceRequirement} if not with_resources else set())
                 ),
+                structure=None,
             ),
             partial(
                 self._evaluate_components,
                 structure_template.production_components.get_components_of_type(ResourceProductionComponent),
+                structure=None,
             ),
             partial(
                 self._evaluate_structure_slot_categories,
@@ -97,7 +99,6 @@ class StructureBuildRequirementEvaluator:
         structure_to_upgrade: Structure,
         with_resources: bool,
     ) -> EvalResult:
-        level = 1 if not structure_to_upgrade else structure_to_upgrade.level + 1
         evaluators: list[Callable[[], EvalResult]] = [
             self._evaluate_entity_exists,
             partial(
@@ -110,12 +111,14 @@ class StructureBuildRequirementEvaluator:
                 structure_to_upgrade.structure_template.requirement_components.get_components(
                     exclude=({ResourceRequirement} if not with_resources else set())
                 ),
+                structure=structure_to_upgrade,
             ),
             partial(
                 self._evaluate_components,
                 structure_to_upgrade.structure_template.production_components.get_components_of_type(
                     ResourceProductionComponent
                 ),
+                structure=structure_to_upgrade,
             ),
             partial(
                 self._evaluate_structure_slot_categories,
@@ -149,13 +152,13 @@ class StructureBuildRequirementEvaluator:
         *,
         upgrade: bool = False,
     ) -> EvalResult:
-        has_outpost = self.user_data_hub.has_structure_at(x=self.x, y=self.y, structure_type=StructureType.OUTPOST)
-        if has_outpost and structure_template.structure_type is StructureType.OUTPOST:
+        has_outpost = self.user_data_hub.has_structure_at(x=self.x, y=self.y, structure_type=StructureType.OUTPOST_T0)
+        if has_outpost and structure_template.structure_type is StructureType.OUTPOST_T0:
             if upgrade:
                 return EvalResult(True)
             return EvalResult(False, "Already has an outpost in the solar system")
         # If the structure is an outpost, we don't need to check for existing outposts
-        if structure_template.structure_type is StructureType.OUTPOST:
+        if structure_template.structure_type is StructureType.OUTPOST_T0:
             return EvalResult(True)
         if not has_outpost:
             return EvalResult(
@@ -352,7 +355,7 @@ def evaluate_structure_prerequisite(
     if component.structure_location_selector is StructureLocationSelector.GLOBAL:
         structures = evaluator.user_data_hub.get_all_structures()
     elif component.structure_location_selector is StructureLocationSelector.LOCAL:
-        structures = evaluator.user_data_hub.get_structures(entity_id=evaluator.entity_id)
+        structures = evaluator.user_data_hub.get_structures_at(evaluator.x, evaluator.y)
     else:
         raise ValueError(f"Invalid where value {component}")
     level = 1 if not structure else structure.level + 1

@@ -66,7 +66,8 @@ class GetStructuresHandler:
                 for structure in built_structures
             ],
             structure_templates=[template.to_dict() for template in matching_templates],
-            other_templates={k: v.detail for k, v in other_templates.items()},
+            # other_templates={k: v.detail for k, v in other_templates.items()},
+            other_templates={},
         )
 
     def get_matching_building_templates(

@@ -58,6 +58,30 @@ class SqliteUserStructureRepository(UserStructureRepository):
             for db_structure in db_structures
         ]
 
+    def get_user_structures_at(self, *, user_id: str, x: int, y: int) -> list[Structure]:
+        """Get the structures of a user at a specific position. If the user does not exist, raise an exception."""
+        with Session(self.engine) as session:
+            db_structures = session.exec(
+                select(StructuresModel).where(
+                    and_(
+                        StructuresModel.user_id == user_id,
+                        StructuresModel.x == x,
+                        StructuresModel.y == y,
+                    )
+                )
+            ).all()
+        return [
+            Structure(
+                structure_id=db_structure.structure_id,
+                entity_id=db_structure.entity_id,
+                structure_type=StructureType(db_structure.structure_type),
+                level=db_structure.level,
+                structure_status=db_structure.structure_status,
+                structure_template=StructureTemplate.get_structure_template(StructureType(db_structure.structure_type)),
+            )
+            for db_structure in db_structures
+        ]
+
     def has_structure(self, *, user_id: str, entity_id: str, structure_type: StructureType) -> bool:
         """Check if a user has a structure. If the user does not exist, raise an exception."""
         with Session(self.engine) as session:

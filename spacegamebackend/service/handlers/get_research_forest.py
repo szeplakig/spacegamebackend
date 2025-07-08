@@ -25,22 +25,13 @@ class GetResearchForestHandler:
         self.user_structure_repository = user_structure_repository
 
     def handle(self, user_id: str) -> ResearchForestResponse:
-        research_levels = self.user_research_repository.get_user_research(
-            user_id=user_id
-        )
-        structure_levels = self.user_structure_repository.get_user_structure_levels(
-            user_id=user_id
-        )
-        nodes, edges, node_rank = build_research_forest(
-            research_levels, structure_levels
-        )
+        research_levels = self.user_research_repository.get_user_research(user_id=user_id)
+        structure_levels = self.user_structure_repository.get_user_structure_levels(user_id=user_id)
+        nodes, edges, node_rank = build_research_forest(research_levels, structure_levels)
         normalized_edges_with_node_index: dict[int, set[int]] = {
-            nodes.index(source): {nodes.index(target) for target in targets}
-            for source, targets in edges.items()
+            nodes.index(source): {nodes.index(target) for target in targets} for source, targets in edges.items()
         }
-        normalized_node_rank = {
-            nodes.index(node): rank for node, rank in node_rank.items()
-        }
+        normalized_node_rank = {nodes.index(node): rank for node, rank in node_rank.items()}
         return ResearchForestResponse(
             nodes=nodes,
             edges=normalized_edges_with_node_index,
